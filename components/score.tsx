@@ -11,11 +11,11 @@ export default function QuizScore({ correctAnswers, totalQuestions }: QuizScoreP
   const roundedScore = Math.round(score)
 
   const getMessage = () => {
-    if (score === 100) return "Perfect score! Congratulations!"
-    if (score >= 80) return "Great job! You did excellently!"
-    if (score >= 60) return "Good effort! You're on the right track."
-    if (score >= 40) return "Not bad, but there's room for improvement."
-    return "Keep practicing, you'll get better!"
+    if (score === 100) return "Отличный результат! Поздравляем!"
+    if (score >= 80) return "Отлично! Вы справились на отлично!"
+    if (score >= 60) return "Хорошая работа! Вы на правильном пути."
+    if (score >= 40) return "Неплохо, но есть куда стремиться."
+    return "Продолжайте практиковаться, у вас всё получится!"
   }
 
   return (
@@ -24,7 +24,7 @@ export default function QuizScore({ correctAnswers, totalQuestions }: QuizScoreP
         <div className="text-center">
           <p className="text-4xl font-bold">{roundedScore}%</p>
           <p className="text-sm text-muted-foreground">
-            {correctAnswers} out of {totalQuestions} correct
+            {correctAnswers} из {totalQuestions} правильных ответов
           </p>
         </div>
         <p className="text-center font-medium">{getMessage()}</p>

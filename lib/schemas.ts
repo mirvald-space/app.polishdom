@@ -6,17 +6,17 @@ export const questionSchema = z.object({
     .array(z.string())
     .length(4)
     .describe(
-      "Four possible answers to the question. Only one should be correct. They should all be of equal lengths.",
+      "Четыре возможных ответа на вопрос. Только один должен быть правильным. Все ответы должны быть одинаковой длины.",
     ),
   answer: z
     .enum(["A", "B", "C", "D"])
     .describe(
-      "The correct answer, where A is the first option, B is the second, and so on.",
+      "Правильный ответ, где A - первый вариант, B - второй и так далее.",
     ),
-  imageUrl: z.string().optional().describe("Optional URL of an image related to the question"),
+  imageUrl: z.string().optional().describe("Опциональный URL изображения, связанного с вопросом"),
   difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
   hint: z.string().optional(),
-  timeLimit: z.number().optional().describe("Time limit in seconds for this question"),
+  timeLimit: z.number().optional().describe("Временной лимит в секундах для этого вопроса"),
 });
 
 export type Question = z.infer<typeof questionSchema>;

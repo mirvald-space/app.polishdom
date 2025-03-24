@@ -63,7 +63,7 @@ const QuestionCard: React.FC<{
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className={difficultyColors[question.difficulty]}>
-            {question.difficulty}
+            {question.difficulty === 'easy' ? 'Легкий' : question.difficulty === 'medium' ? 'Средний' : 'Сложный'}
           </Badge>
           {streak > 0 && (
             <Badge variant="secondary" className="bg-purple-500">
@@ -78,7 +78,7 @@ const QuestionCard: React.FC<{
           </Button>
           <div className="flex items-center gap-1 text-muted-foreground">
             <Timer className="w-4 h-4" />
-            <span>{timeLeft}s</span>
+            <span>{timeLeft}с</span>
           </div>
         </div>
       </div>
@@ -146,7 +146,7 @@ const QuestionCard: React.FC<{
           onClick={onHint}
         >
           <Lightbulb className="w-4 h-4 mr-2" />
-          Show Hint
+          Подсказка
         </Button>
       )}
     </div>
@@ -156,7 +156,7 @@ const QuestionCard: React.FC<{
 export default function Quiz({
   questions,
   clearPDF,
-  title = "Quiz",
+  title = "Тест",
 }: QuizProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>(Array(questions.length).fill(null));
@@ -297,6 +297,15 @@ export default function Quiz({
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  const getMessage = () => {
+    if (!score) return "Продолжайте практиковаться, у вас всё получится!"
+    if (score === 100) return "Отличный результат! Поздравляем!"
+    if (score >= 80) return "Отлично! Вы справились на отлично!"
+    if (score >= 60) return "Хорошая работа! Вы на правильном пути."
+    if (score >= 40) return "Неплохо, но есть куда стремиться."
+    return "Продолжайте практиковаться, у вас всё получится!"
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="container mx-auto px-4 py-12 max-w-4xl">
@@ -304,7 +313,7 @@ export default function Quiz({
           {title}
         </h1>
         <div className="text-center mb-6 text-muted-foreground">
-          <p>Practice your Polish with this interactive quiz!</p>
+          <p>Практикуйте польский язык с помощью этого интерактивного теста!</p>
         </div>
         <div className="relative">
           {!isSubmitted && <Progress value={progress} className="h-1 mb-8" />}
@@ -338,7 +347,7 @@ export default function Quiz({
                         disabled={currentQuestionIndex === 0}
                         variant="ghost"
                       >
-                        <ChevronLeft className="mr-2 h-4 w-4" /> Poprzednie
+                        <ChevronLeft className="mr-2 h-4 w-4" /> Предыдущий
                       </Button>
                       <span className="text-sm font-medium">
                         {currentQuestionIndex + 1} / {questions.length}
@@ -349,8 +358,8 @@ export default function Quiz({
                         variant="ghost"
                       >
                         {currentQuestionIndex === questions.length - 1
-                          ? "Zakończ"
-                          : "Następne"}{" "}
+                          ? "Завершить"
+                          : "Следующий"}{" "}
                         <ChevronRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
@@ -370,13 +379,13 @@ export default function Quiz({
                         variant="outline"
                         className="bg-muted hover:bg-muted/80 w-full"
                       >
-                        <RefreshCw className="mr-2 h-4 w-4" /> Powtórz Quiz
+                        <RefreshCw className="mr-2 h-4 w-4" /> Повторить тест
                       </Button>
                       <Button
                         onClick={clearPDF}
                         className="bg-primary hover:bg-primary/90 w-full"
                       >
-                        <FileText className="mr-2 h-4 w-4" /> Nowy Quiz
+                        <FileText className="mr-2 h-4 w-4" /> Новый тест
                       </Button>
                     </div>
                   </div>

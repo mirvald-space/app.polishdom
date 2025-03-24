@@ -3,52 +3,47 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 export const NonMemoizedMarkdown = ({ children }: { children: string }) => {
-  const components = {
-    code: ({ node, inline, className, children, ...props }: any) => {
-      const match = /language-(\w+)/.exec(className || "");
-      return !inline && match ? (
-        <pre
-          {...props}
-          className={`${className} text-sm w-[80dvw] md:max-w-[500px] overflow-x-scroll bg-zinc-100 p-2 rounded mt-2 dark:bg-zinc-800`}
-        >
-          <code className={match[1]}>{children}</code>
-        </pre>
-      ) : (
-        <code
-          className={`${className} text-sm bg-zinc-100 dark:bg-zinc-800 py-0.5 px-1 rounded`}
-          {...props}
-        >
-          {children}
-        </code>
-      );
-    },
-    ol: ({ node, children, ...props }: any) => {
-      return (
-        <ol className="list-decimal list-inside ml-4" {...props}>
-          {children}
-        </ol>
-      );
-    },
-    li: ({ node, children, ...props }: any) => {
-      return (
-        <li className="py-1" {...props}>
-          {children}
-        </li>
-      );
-    },
-    ul: ({ node, children, ...props }: any) => {
-      return (
-        <ul className="list-decimal list-inside ml-4" {...props}>
-          {children}
-        </ul>
-      );
-    },
-  };
-
   return (
-    <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-      {children}
-    </ReactMarkdown>
+    <article className="prose prose-sm dark:prose-invert max-w-none">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          p: ({ children }) => <p className="mb-4 whitespace-pre-wrap">{children}</p>,
+          h1: ({ children }) => <h1 className="text-3xl font-bold mb-4">{children}</h1>,
+          h2: ({ children }) => <h2 className="text-2xl font-bold mb-3">{children}</h2>,
+          h3: ({ children }) => <h3 className="text-xl font-bold mb-2">{children}</h3>,
+          ul: ({ children }) => <ul className="list-disc pl-6 mb-4">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal pl-6 mb-4">{children}</ol>,
+          li: ({ children }) => <li className="mb-2">{children}</li>,
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-4 border-primary pl-4 italic my-4">
+              {children}
+            </blockquote>
+          ),
+          table: ({ children }) => (
+            <div className="overflow-x-auto my-4">
+              <table className="min-w-full border-collapse border border-border">
+                {children}
+              </table>
+            </div>
+          ),
+          th: ({ children }) => (
+            <th className="border border-border px-4 py-2 bg-muted font-semibold">
+              {children}
+            </th>
+          ),
+          td: ({ children }) => (
+            <td className="border border-border px-4 py-2">
+              {children}
+            </td>
+          ),
+          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+          em: ({ children }) => <em className="italic">{children}</em>
+        }}
+      >
+        {children}
+      </ReactMarkdown>
+    </article>
   );
 };
 

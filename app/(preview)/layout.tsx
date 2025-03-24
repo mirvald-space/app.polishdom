@@ -8,8 +8,8 @@ const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ai-sdk-preview-pdf-support.vercel.app"),
-  title: "Polski Tutor - Polish Language Learning Platform",
-  description: "Interactive Polish language learning platform for tutors and students",
+  title: "Польский язык для русскоговорящих",
+  description: "Интерактивная платформа для изучения польского языка",
 };
 
 export default function RootLayout({

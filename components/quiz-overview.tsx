@@ -15,7 +15,7 @@ export default function QuizReview({ questions, userAnswers }: QuizReviewProps) 
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Quiz Review</CardTitle>
+        <CardTitle className="text-2xl font-bold">Обзор теста</CardTitle>
       </CardHeader>
       <CardContent>
           {questions.map((question, questionIndex) => (

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   const topic = formData.get("topic") as string;
   
   if (!topic) {
-    return new Response("No topic provided", { status: 400 });
+    return new Response("Тема не указана", { status: 400 });
   }
 
   try {
@@ -47,14 +47,14 @@ export async function POST(req: Request) {
         messages: [
           {
             role: "system",
-            content: `You are a Polish language teacher. Your job is to create a multiple choice quiz (with 4 questions) specifically for Polish language learning. Questions should test vocabulary, grammar, pronunciation, or cultural knowledge about Poland. Each option should be roughly equal in length. You must return ONLY valid JSON array matching this schema: [{
+            content: `You are a Polish language teacher specializing in teaching Russian speakers. Your job is to create a multiple choice quiz (with 4 questions) specifically for Russian speakers learning Polish. Questions should test vocabulary, grammar, pronunciation, or cultural knowledge about Poland, with a focus on common mistakes Russian speakers make when learning Polish. Each option should be roughly equal in length. You must return ONLY valid JSON array matching this schema: [{
               question: string,
               options: string[],
               answer: 'A'|'B'|'C'|'D',
               difficulty: 'easy'|'medium'|'hard',
               hint: string (optional),
               timeLimit: number (optional, in seconds)
-            }]. Questions can include Polish vocabulary with translations. Do not include any other text in your response.`,
+            }]. Questions can include Polish vocabulary with Russian translations. Do not include any other text in your response.`,
           },
           {
             role: "user",
@@ -99,8 +99,8 @@ export async function POST(req: Request) {
 
     const result = questionsSchema.safeParse(questionsWithImages);
     if (!result.success) {
-      console.error("Validation error:", result.error);
-      throw new Error("Response does not match expected format");
+      console.error("Ошибка валидации:", result.error);
+      throw new Error("Ответ не соответствует ожидаемому формату");
     }
 
     return new Response(JSON.stringify(questionsWithImages), {
@@ -109,7 +109,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Error generating quiz:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to generate quiz" }),
+      JSON.stringify({ error: "Не удалось сгенерировать тест" }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
