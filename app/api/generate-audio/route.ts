@@ -25,13 +25,12 @@ export async function POST(request: Request) {
     // Получаем буфер
     const buffer = await response.arrayBuffer();
     
-    // Создаем Blob URL
-    const blob = new Blob([buffer], { type: 'audio/mp3' });
-    const audioUrl = URL.createObjectURL(blob);
+    // Отправляем аудио как base64
+    const base64Audio = Buffer.from(buffer).toString('base64');
 
     return NextResponse.json({ 
-      audioUrl,
-      size: buffer.byteLength
+      audioData: base64Audio,
+      contentType: 'audio/mp3'
     });
   } catch (error) {
     console.error("Error generating audio:", error);
