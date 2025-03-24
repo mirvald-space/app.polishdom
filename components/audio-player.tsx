@@ -12,12 +12,24 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    // Создаем новый Audio элемент
     audioRef.current = new Audio(audioUrl);
+    
+    // Добавляем обработчики событий
     audioRef.current.addEventListener('ended', () => setIsPlaying(false));
+    audioRef.current.addEventListener('error', (e) => {
+      console.error('Audio error:', e);
+      setIsPlaying(false);
+    });
+
+    // Очистка при размонтировании
     return () => {
       if (audioRef.current) {
         audioRef.current.removeEventListener('ended', () => setIsPlaying(false));
+        audioRef.current.removeEventListener('error', () => setIsPlaying(false));
         audioRef.current.pause();
+        // Освобождаем Blob URL
+        URL.revokeObjectURL(audioUrl);
       }
     };
   }, [audioUrl]);
@@ -27,7 +39,10 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.play();
+        audioRef.current.play().catch(error => {
+          console.error('Error playing audio:', error);
+          setIsPlaying(false);
+        });
       }
       setIsPlaying(!isPlaying);
     }

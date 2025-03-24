@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
+export const maxDuration = 60; // Увеличиваем максимальное время выполнения до 60 секунд
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -16,32 +18,58 @@ export async function POST(request: Request) {
       return new Response("Text is required", { status: 400 });
     }
 
-    console.log("Calling OpenAI TTS API...");
-    const response = await openai.audio.speech.create({
-      model: "tts-1",
-      voice: "alloy",
-      input: text,
-    });
-    console.log("Received response from OpenAI");
+    // Разбиваем текст на более мелкие части, если он слишком длинный
+    const maxLength = 4000; // Максимальная длина для одного запроса
+    const chunks = text.match(new RegExp(`.{1,${maxLength}}`, 'g')) || [text];
+    
+    console.log("Text chunks:", chunks.length);
+    
+    // Генерируем аудио для каждой части
+    const audioBuffers = await Promise.all(
+      chunks.map(async (chunk: string, index: number) => {
+        console.log(`Generating audio for chunk ${index + 1}/${chunks.length}`);
+        const response = await openai.audio.speech.create({
+          model: "tts-1",
+          voice: "alloy",
+          input: chunk,
+        });
+        return await response.arrayBuffer();
+      })
+    );
 
-    // Convert the response to a buffer
-    const buffer = await response.arrayBuffer();
-    console.log("Buffer size:", buffer.byteLength);
+    // Объединяем все буферы
+    const totalLength = audioBuffers.reduce((acc, buf) => acc + buf.byteLength, 0);
+    const combinedBuffer = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const buffer of audioBuffers) {
+      combinedBuffer.set(new Uint8Array(buffer), offset);
+      offset += buffer.byteLength;
+    }
+
+    console.log("Combined buffer size:", combinedBuffer.length);
     
-    // Convert buffer to base64
-    const base64Audio = Buffer.from(buffer).toString('base64');
-    console.log("Base64 length:", base64Audio.length);
+    // Создаем Blob URL
+    const blob = new Blob([combinedBuffer], { type: 'audio/mp3' });
+    const audioUrl = URL.createObjectURL(blob);
     
-    // Create a data URL
-    const audioUrl = `data:audio/mp3;base64,${base64Audio}`;
     console.log("Generated audio URL");
 
-    return NextResponse.json({ audioUrl });
+    return NextResponse.json({ 
+      audioUrl,
+      size: combinedBuffer.length,
+      chunks: chunks.length
+    });
   } catch (error) {
     console.error("Error generating audio:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to generate audio", details: error instanceof Error ? error.message : String(error) }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({ 
+        error: "Failed to generate audio",
+        details: error instanceof Error ? error.message : "Unknown error"
+      }),
+      { 
+        status: 500, 
+        headers: { "Content-Type": "application/json" }
+      }
     );
   }
 } 

@@ -7,8 +7,8 @@ import { Geist } from "next/font/google";
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ai-sdk-preview-pdf-support.vercel.app"),
-  title: "Польский язык для русскоговорящих",
+  metadataBase: new URL("https://app.polishdom.com"),
+  title: "PolishDom - Обучение польскому языку",
   description: "Интерактивная платформа для изучения польского языка",
 };
 
