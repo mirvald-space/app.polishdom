@@ -13,6 +13,10 @@ export const questionSchema = z.object({
     .describe(
       "The correct answer, where A is the first option, B is the second, and so on.",
     ),
+  imageUrl: z.string().optional().describe("Optional URL of an image related to the question"),
+  difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
+  hint: z.string().optional(),
+  timeLimit: z.number().optional().describe("Time limit in seconds for this question"),
 });
 
 export type Question = z.infer<typeof questionSchema>;
