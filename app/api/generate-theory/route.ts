@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const maxDuration = 60; // Увеличиваем максимальное время выполнения до 60 секунд
+
 export async function POST(request: Request) {
   const formData = await request.formData();
   const topic = formData.get("topic") as string;
@@ -9,6 +11,8 @@ export async function POST(request: Request) {
   }
 
   try {
+    console.log("Generating theory for topic:", topic);
+    
     const response = await fetch("https://api.x.ai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -47,25 +51,37 @@ export async function POST(request: Request) {
         model: "grok-beta",
         stream: false,
         temperature: 0.7,
+        max_tokens: 1000, // Ограничиваем длину ответа
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      console.error("x.ai API error:", response.statusText, errorData);
       throw new Error(`x.ai API error: ${response.statusText} - ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
     const content = data.choices[0].message.content;
+    console.log("Successfully generated theory content");
 
     return new Response(JSON.stringify({ content }), {
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" // Кэшируем результат на 1 час
+      },
     });
   } catch (error) {
     console.error("Error generating theory:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to generate theory content" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({ 
+        error: "Failed to generate theory content",
+        details: error instanceof Error ? error.message : "Unknown error"
+      }),
+      { 
+        status: 500, 
+        headers: { "Content-Type": "application/json" }
+      }
     );
   }
 } 
