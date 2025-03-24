@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
@@ -88,10 +89,12 @@ const QuestionCard: React.FC<{
         </h2>
         {question.imageUrl && (
           <div className="relative w-full aspect-video rounded-lg overflow-hidden">
-            <img
+            <Image
               src={question.imageUrl}
               alt="Question illustration"
               className="object-cover w-full h-full"
+              fill
+              priority
             />
           </div>
         )}
