@@ -17,8 +17,8 @@ export async function POST(request: Request) {
 
     // Генерируем аудио для одного слова/фразы
     const response = await openai.audio.speech.create({
-      model: "tts-1",
-      voice: "alloy",
+      model: "gpt-4o-mini-tts",
+      voice: "coral",
       input: text,
     });
 
