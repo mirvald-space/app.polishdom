@@ -5,16 +5,23 @@ import { ChevronRight } from "lucide-react";
 import { Markdown } from './markdown';
 import PolishWord from './polish-word';
 
+// Расширяем глобальный интерфейс Window
+declare global {
+  interface Window {
+    playAudio?: (word: string) => Promise<void>;
+  }
+}
+
 interface TheoryProps {
   content: string;
   onStartQuiz: () => void;
 }
 
 export default function Theory({ content, onStartQuiz }: TheoryProps) {
-  // Функция для обработки markdown контента и замены польских слов на компоненты
+  // Функция для обработки контента и замены польских слов на компоненты
   const processContent = (content: string) => {
     // Разбиваем контент на части, сохраняя разделители
-    const parts = content.split(/(\*\*.*?\*\*\s*\|[^|]*\|)/);
+    const parts = content.split(/(\*\*.*?\*\*\s*\|\s*.*?\s*\|)/);
     
     return parts.map((part, index) => {
       // Проверяем, является ли часть польским словом с переводом
@@ -23,8 +30,8 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
         const [, word, translation] = match;
         return <PolishWord key={index} word={word} translation={translation} />;
       }
-      // Если это обычный текст, возвращаем его как есть
-      return part;
+      // Если это обычный текст, обрабатываем его как markdown
+      return <Markdown key={index}>{part}</Markdown>;
     });
   };
 
