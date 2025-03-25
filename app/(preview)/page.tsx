@@ -59,9 +59,10 @@ export default function ChatWithFiles() {
       setTheory(theoryData.content);
       setProgress(50);
 
-      // Then generate quiz
+      // Then generate quiz based on the theory content
       const quizFormData = new FormData();
       quizFormData.append("topic", topic);
+      quizFormData.append("theory", theoryData.content);
 
       const quizResponse = await fetch("/api/generate-quiz", {
         method: "POST",

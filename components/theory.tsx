@@ -148,7 +148,7 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
         </div>
         <div className="flex justify-center mt-8">
           <Button onClick={onStartQuiz} size="lg" className="gap-2">
-            Start Quiz <ChevronRight className="h-4 w-4" />
+          Начать викторину <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

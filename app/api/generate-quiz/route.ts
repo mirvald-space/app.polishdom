@@ -31,9 +31,14 @@ async function generateImage(prompt: string) {
 export async function POST(req: Request) {
   const formData = await req.formData();
   const topic = formData.get("topic") as string;
+  const theory = formData.get("theory") as string;
   
   if (!topic) {
     return new Response("Тема не указана", { status: 400 });
+  }
+
+  if (!theory) {
+    return new Response("Теоретический материал не предоставлен", { status: 400 });
   }
 
   try {
@@ -47,18 +52,56 @@ export async function POST(req: Request) {
         messages: [
           {
             role: "system",
-            content: `You are a Polish language teacher specializing in teaching Russian speakers. Your job is to create a multiple choice quiz (with 4 questions) specifically for Russian speakers learning Polish. Questions should test vocabulary, grammar, pronunciation, or cultural knowledge about Poland, with a focus on common mistakes Russian speakers make when learning Polish. Each option should be roughly equal in length. You must return ONLY valid JSON array matching this schema: [{
-              question: string,
-              options: string[],
-              answer: 'A'|'B'|'C'|'D',
-              difficulty: 'easy'|'medium'|'hard',
-              hint: string (optional),
-              timeLimit: number (optional, in seconds)
-            }]. Questions can include Polish vocabulary with Russian translations. Do not include any other text in your response.`,
+            content: `You are a Polish language teacher specializing in teaching Russian speakers. Your job is to create an interactive quiz (with 4 questions) specifically for Russian speakers learning Polish based on the provided theory material.
+
+Create a mix of different question types that directly test understanding of the theory content:
+1. Multiple choice questions with 4 options (make sure all options are roughly equal in length)
+2. Fill in the blank questions where students have to provide the missing word(s)
+3. True/False questions where students have to evaluate if a statement is correct
+
+You must return ONLY valid JSON array matching this schema:
+[
+  // Multiple choice question
+  {
+    "type": "multipleChoice",
+    "question": string,
+    "options": string[] (array of 4 options),
+    "answer": 'A'|'B'|'C'|'D',
+    "difficulty": 'easy'|'medium'|'hard',
+    "hint": string (optional)
+  },
+  
+  // Fill in blank question
+  {
+    "type": "fillInBlank",
+    "question": string,
+    "context": string (text with [BLANK] placeholders for words),
+    "blanks": string[] (array of correct answers for each blank),
+    "difficulty": 'easy'|'medium'|'hard',
+    "hint": string (optional)
+  },
+  
+  // True/False question
+  {
+    "type": "trueFalse",
+    "question": string,
+    "statement": string (statement to evaluate),
+    "answer": boolean,
+    "difficulty": 'easy'|'medium'|'hard',
+    "hint": string (optional)
+  }
+]
+
+IMPORTANT: The questions MUST test understanding of the theory material provided. Use concepts, vocabulary, and facts directly from the theory. Include at least one of each type of question.
+Do not include any other text in your response.`,
           },
           {
             role: "user",
-            content: `Create a multiple choice quiz about Polish language on the topic: ${topic}. Remember to return ONLY the JSON array.`,
+            content: `Create an interactive quiz about Polish language on the topic: ${topic} based on this theory material: 
+
+${theory}
+
+Remember to return ONLY the JSON array.`,
           },
         ],
         model: "grok-beta",
@@ -89,7 +132,23 @@ export async function POST(req: Request) {
     // Generate images for each question
     const questionsWithImages = await Promise.all(
       content.map(async (question: any) => {
-        const imageUrl = await generateImage(`An illustration related to Polish language or culture representing: ${question.question}`);
+        let imagePrompt;
+        
+        switch (question.type) {
+          case 'multipleChoice':
+            imagePrompt = `An illustration related to Polish language or culture representing: ${question.question}`;
+            break;
+          case 'fillInBlank':
+            imagePrompt = `An illustration related to Polish language or culture representing: ${question.context.replace(/\[BLANK\]/g, '___')}`;
+            break;
+          case 'trueFalse':
+            imagePrompt = `An illustration related to Polish language or culture representing: ${question.statement}`;
+            break;
+          default:
+            imagePrompt = `An illustration related to Polish language or culture`;
+        }
+        
+        const imageUrl = await generateImage(imagePrompt);
         return {
           ...question,
           imageUrl,
