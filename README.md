@@ -1,10 +1,9 @@
-# Polish Language Learning Assistant 🎓
+# PolishDom - Polish Language Learning Platform 🎓
 
-Hey there! 👋 Welcome to PolishDom, an AI-powered Polish language learning platform that makes learning Polish engaging and interactive. This project combines modern web technologies with AI to create a personalized learning experience. 🚀
+Welcome to PolishDom, a platform for learning Polish language through interactive lessons and quizzes. This project combines modern web technologies to create an engaging learning experience. 🚀
 
 ## ✨ Features
 
-- 🤖 AI-powered lesson generation
 - 📝 Multiple question types:
   - Multiple choice questions
   - Fill-in-the-blank exercises
@@ -19,6 +18,10 @@ Hey there! 👋 Welcome to PolishDom, an AI-powered Polish language learning pla
 - 🌓 Dark/Light mode support
 - 📊 Real-time progress tracking
 - 🔄 Quiz review and reset functionality
+- 📚 Theory section with:
+  - Markdown content support
+  - Text-to-speech functionality
+  - Interactive navigation
 
 ## 🛠️ Tech Stack
 
@@ -105,7 +108,7 @@ MIT
 
 ## 🌟 About
 
-PolishDom is designed to make Polish language learning accessible and engaging. The project combines modern web technologies with AI to create a personalized learning experience. Whether you're a beginner or looking to improve your Polish skills, PolishDom is here to help! 📚
+PolishDom is designed to make Polish language learning accessible and engaging. The platform provides interactive lessons with theory sections and quizzes to help learners practice and reinforce their knowledge. Whether you're a beginner or looking to improve your Polish skills, PolishDom offers a structured approach to learning. 📚
 
 ---
 Made with ❤️ by Vadym
