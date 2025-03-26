@@ -138,17 +138,17 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
   }, [mounted, content]);
 
   return (
-    <Card className="w-full">
+    <Card className="w-full rounded-2xl">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Theory</CardTitle>
+        <CardTitle className="text-2xl font-bold">Теория</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="prose dark:prose-invert max-w-none" ref={contentRef}>
           <Markdown>{content}</Markdown>
         </div>
         <div className="flex justify-center mt-8">
-          <Button onClick={onStartQuiz} size="lg" className="gap-2">
-          Начать викторину <ChevronRight className="h-4 w-4" />
+          <Button onClick={onStartQuiz} size="lg" className="gap-2 rounded-2xl bg-[#BB4A3D]">
+          Перейти к освоению теории <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

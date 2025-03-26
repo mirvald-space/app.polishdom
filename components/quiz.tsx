@@ -3,23 +3,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
-  Check,
-  X,
   RefreshCw,
   FileText,
-  Lightbulb,
-  Trophy,
-  Volume2,
-  VolumeX,
+
 } from "lucide-react";
 import QuizScore from "./score";
 import QuizReview from "./quiz-overview";
 import { Question } from "@/lib/schemas";
-import { Badge } from "@/components/ui/badge";
 import { 
   MultipleChoiceCard, 
   FillInBlankCard, 
@@ -350,13 +343,13 @@ export default function Quiz({
                       <Button
                         onClick={handleReset}
                         variant="outline"
-                        className="bg-muted hover:bg-muted/80 w-full"
+                        className="bg-muted hover:bg-muted/80 w-full rounded-2xl"
                       >
                         <RefreshCw className="mr-2 h-4 w-4" /> Повторить тест
                       </Button>
                       <Button
                         onClick={clearPDF}
-                        className="bg-primary hover:bg-primary/90 w-full"
+                        className="bg-primary hover:bg-primary/90 w-full rounded-2xl bg-[#BB4A3D]"
                       >
                         <FileText className="mr-2 h-4 w-4" /> Новый тест
                       </Button>

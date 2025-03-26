@@ -5,6 +5,7 @@ import { questionsSchema } from "@/lib/schemas";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { FaSchoolFlag } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,10 +19,8 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import Quiz from "@/components/quiz";
 import Theory from "@/components/theory";
-import { Link } from "@/components/ui/link";
-import NextLink from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { VercelIcon, GitIcon } from "@/components/icons";
+import Link from "next/link";
 
 export default function ChatWithFiles() {
   const [topic, setTopic] = useState<string>("");
@@ -38,7 +37,7 @@ export default function ChatWithFiles() {
 
     setIsLoading(true);
     setProgress(0);
-    setTitle(`Polski Quiz: ${topic}`);
+    setTitle(`Освоение теории: ${topic}`);
     setShowQuiz(false);
 
     try {
@@ -128,16 +127,16 @@ export default function ChatWithFiles() {
       <Card className="w-full max-w-md h-full border-0 sm:border sm:h-fit mt-12">
         <CardHeader className="text-center space-y-6">
           <div className="mx-auto flex items-center justify-center space-x-2 text-muted-foreground">
-            <div className="rounded-full bg-primary/10 p-2">
-              <Loader2 className="h-6 w-6" />
+            <div className="rounded-2xl bg-primary/5 p-2">
+              <FaSchoolFlag className="h-6 w-6 text-[#BB4A3D]" />
             </div>
           </div>
           <div className="space-y-2">
             <CardTitle className="text-2xl font-bold">
-              Польский язык для русскоговорящих
+              Польский язык
             </CardTitle>
             <CardDescription>
-              Интерактивные уроки польского языка с теорией и тестами
+              Создавай интерактивные уроки польского языка с теорией и тестами, напиши тему и создай урок
             </CardDescription>
           </div>
         </CardHeader>
@@ -149,19 +148,20 @@ export default function ChatWithFiles() {
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 disabled={isLoading}
+                className="rounded-2xl"
               />
             </div>
             {isLoading && (
               <div className="space-y-2">
-                <Progress value={progress} className="h-1" />
+                <Progress value={progress} className="h-1 " />
                 <p className="text-sm text-muted-foreground text-center">
-                  Генерация контента... {progress}%
+                  Генерация контента подождите... {progress}%
                 </p>
               </div>
             )}
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-[#BB4A3D] rounded-2xl"
               disabled={isLoading || !topic}
             >
               {isLoading ? (
@@ -182,7 +182,7 @@ export default function ChatWithFiles() {
         animate={{ y: 0, opacity: 1 }}
       >
         <div className="flex flex-row gap-2 items-center border px-2 py-1.5 rounded-md bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800">
-          Польский язык для русскоговорящих - Инструмент для изучения польского языка
+          ❤️ С любовью от<Link href="http://mirvald.space">mirvald.space</Link>
         </div>
       </motion.div>
     </div>
