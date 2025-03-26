@@ -108,5 +108,5 @@ MIT
 PolishDom is designed to make Polish language learning accessible and engaging. The project combines modern web technologies with AI to create a personalized learning experience. Whether you're a beginner or looking to improve your Polish skills, PolishDom is here to help! 📚
 
 ---
-Made with ❤️ by [Your Name]
+Made with ❤️ by Vadym
 
