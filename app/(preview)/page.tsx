@@ -4,13 +4,12 @@ import { useState } from "react";
 import { questionsSchema } from "@/lib/schemas";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { FaSpinner } from "react-icons/fa6";
 import { FaSchoolFlag } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
   CardDescription,
@@ -93,7 +92,7 @@ export default function ChatWithFiles() {
   if (questions.length === 4 && theory) {
     return (
       <div className="min-h-[100dvh] w-full flex justify-center">
-        <div className="w-full max-w-4xl h-full mt-12 px-4">
+        <div className="w-full max-w-3xl h-full">
           <AnimatePresence mode="wait">
             {!showQuiz ? (
               <motion.div
@@ -166,7 +165,7 @@ export default function ChatWithFiles() {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
                   Генерация...
                 </>
               ) : (

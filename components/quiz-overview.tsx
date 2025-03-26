@@ -1,4 +1,4 @@
-import { Check, X } from 'lucide-react'
+import { FaCheck, FaXmark } from 'react-icons/fa6'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Question } from '@/lib/schemas'
@@ -55,10 +55,10 @@ export default function QuizReview({ questions, userAnswers }: QuizReviewProps) 
               <span className="text-lg font-medium mr-4 w-6">{currentLabel}</span>
               <span className="flex-grow">{option}</span>
               {isCorrect && (
-                <Check className="ml-2 text-green-600 dark:text-green-400" size={20} />
+                <FaCheck className="ml-2 text-green-600 dark:text-green-400" size={20} />
               )}
               {isIncorrectSelection && (
-                <X className="ml-2 text-red-600 dark:text-red-400" size={20} />
+                <FaXmark className="ml-2 text-red-600 dark:text-red-400" size={20} />
               )}
             </div>
           )
@@ -129,10 +129,10 @@ export default function QuizReview({ questions, userAnswers }: QuizReviewProps) 
           >
             <span>Верно</span>
             {correctAnswer === true && (
-              <Check className="ml-2 text-green-600 dark:text-green-400" size={20} />
+              <FaCheck className="ml-2 text-green-600 dark:text-green-400" size={20} />
             )}
             {userAnswer === true && !isCorrect && (
-              <X className="ml-2 text-red-600 dark:text-red-400" size={20} />
+              <FaXmark className="ml-2 text-red-600 dark:text-red-400" size={20} />
             )}
           </div>
           <div
@@ -146,10 +146,10 @@ export default function QuizReview({ questions, userAnswers }: QuizReviewProps) 
           >
             <span>Неверно</span>
             {correctAnswer === false && (
-              <Check className="ml-2 text-green-600 dark:text-green-400" size={20} />
+              <FaCheck className="ml-2 text-green-600 dark:text-green-400" size={20} />
             )}
             {userAnswer === false && !isCorrect && (
-              <X className="ml-2 text-red-600 dark:text-red-400" size={20} />
+              <FaXmark className="ml-2 text-red-600 dark:text-red-400" size={20} />
             )}
           </div>
         </div>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Check, X, Lightbulb, Volume2, VolumeX, Trophy } from "lucide-react";
+import { FaCheck, FaXmark, FaLightbulb, FaVolumeHigh, FaVolumeXmark, FaTrophy } from "react-icons/fa6";
 import {
   FillInBlankQuestion,
   MultipleChoiceQuestion,
@@ -48,7 +48,7 @@ export function MultipleChoiceCard({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-12">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className={difficultyColors[question.difficulty]}>
@@ -56,23 +56,21 @@ export function MultipleChoiceCard({
           </Badge>
           {streak > 0 && (
             <Badge variant="secondary" className="bg-purple-500">
-              <Trophy className="w-3 h-3 mr-1" />
+              <FaTrophy className="w-3 h-3 mr-1" />
               {streak}x
             </Badge>
           )}
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={onToggleSound}>
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            {isMuted ? <FaVolumeXmark className="w-4 h-4" /> : <FaVolumeHigh className="w-4 h-4" />}
           </Button>
         </div>
       </div>
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold leading-tight">
-          {question.question}
-        </h2>
+        
         {question.imageUrl && (
-          <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+          <div className="relative w-full aspect-video rounded-2xl overflow-hidden">
             <Image
               src={question.imageUrl}
               alt="Question illustration"
@@ -82,8 +80,13 @@ export function MultipleChoiceCard({
             />
           </div>
         )}
+        
       </div>
-      <div className="grid grid-cols-1 gap-4">
+      <h2 className="text-lg font-semibold leading-tight">
+          {question.question}
+        </h2>
+      <div className="grid grid-cols-2 gap-4 ">
+        
         {question.options.map((option, index) => (
           <motion.div
             key={index}
@@ -115,12 +118,12 @@ export function MultipleChoiceCard({
               <span className="flex-grow">{option}</span>
               {(showCorrectAnswer && answerLabels[index] === question.answer) ||
                 (selectedAnswer === answerLabels[index] && (
-                  <Check className="ml-2 shrink-0 text-white" size={20} />
+                  <FaCheck className="ml-2 shrink-0 text-white" size={20} />
                 ))}
               {showCorrectAnswer &&
                 selectedAnswer === answerLabels[index] &&
                 selectedAnswer !== question.answer && (
-                  <X className="ml-2 shrink-0 text-white" size={20} />
+                  <FaXmark className="ml-2 shrink-0 text-white" size={20} />
                 )}
             </Button>
           </motion.div>
@@ -132,7 +135,7 @@ export function MultipleChoiceCard({
           className="w-full"
           onClick={onHint}
         >
-          <Lightbulb className="w-4 h-4 mr-2" />
+          <FaLightbulb className="w-4 h-4 mr-2" />
           Подсказка
         </Button>
       )}
@@ -181,14 +184,14 @@ export function FillInBlankCard({
           </Badge>
           {streak > 0 && (
             <Badge variant="secondary" className="bg-purple-500">
-              <Trophy className="w-3 h-3 mr-1" />
+              <FaTrophy className="w-3 h-3 mr-1" />
               {streak}x
             </Badge>
           )}
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={onToggleSound}>
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            {isMuted ? <FaVolumeXmark className="w-4 h-4" /> : <FaVolumeHigh className="w-4 h-4" />}
           </Button>
         </div>
       </div>
@@ -230,10 +233,10 @@ export function FillInBlankCard({
                 {showCorrectAnswer && (
                   <span className="ml-2 text-sm">
                     {answers[index] === question.blanks[index] ? (
-                      <Check className="inline text-green-500" size={16} />
+                      <FaCheck className="inline text-green-500" size={16} />
                     ) : (
                       <>
-                        <X className="inline text-red-500" size={16} />
+                        <FaXmark className="inline text-red-500" size={16} />
                         <span className="ml-1 text-green-600">
                           ({question.blanks[index]})
                         </span>
@@ -253,7 +256,7 @@ export function FillInBlankCard({
           className="w-full"
           onClick={onHint}
         >
-          <Lightbulb className="w-4 h-4 mr-2" />
+          <FaLightbulb className="w-4 h-4 mr-2" />
           Подсказка
         </Button>
       )}
@@ -294,14 +297,14 @@ export function TrueFalseCard({
           </Badge>
           {streak > 0 && (
             <Badge variant="secondary" className="bg-purple-500">
-              <Trophy className="w-3 h-3 mr-1" />
+              <FaTrophy className="w-3 h-3 mr-1" />
               {streak}x
             </Badge>
           )}
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={onToggleSound}>
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            {isMuted ? <FaVolumeXmark className="w-4 h-4" /> : <FaVolumeHigh className="w-4 h-4" />}
           </Button>
         </div>
       </div>
@@ -350,12 +353,12 @@ export function TrueFalseCard({
               <span className="text-lg font-medium">Верно</span>
               {(showCorrectAnswer && question.answer === true) ||
                 (selectedAnswer === true && (
-                  <Check className="ml-2 shrink-0 text-white" size={20} />
+                  <FaCheck className="ml-2 shrink-0 text-white" size={20} />
                 ))}
               {showCorrectAnswer &&
                 selectedAnswer === true &&
                 true !== question.answer && (
-                  <X className="ml-2 shrink-0 text-white" size={20} />
+                  <FaXmark className="ml-2 shrink-0 text-white" size={20} />
                 )}
             </Button>
           </motion.div>
@@ -384,12 +387,12 @@ export function TrueFalseCard({
               <span className="text-lg font-medium">Неверно</span>
               {(showCorrectAnswer && question.answer === false) ||
                 (selectedAnswer === false && (
-                  <Check className="ml-2 shrink-0 text-white" size={20} />
+                  <FaCheck className="ml-2 shrink-0 text-white" size={20} />
                 ))}
               {showCorrectAnswer &&
                 selectedAnswer === false &&
                 false !== question.answer && (
-                  <X className="ml-2 shrink-0 text-white" size={20} />
+                  <FaXmark className="ml-2 shrink-0 text-white" size={20} />
                 )}
             </Button>
           </motion.div>
@@ -402,7 +405,7 @@ export function TrueFalseCard({
           className="w-full"
           onClick={onHint}
         >
-          <Lightbulb className="w-4 h-4 mr-2" />
+          <FaLightbulb className="w-4 h-4 mr-2" />
           Подсказка
         </Button>
       )}

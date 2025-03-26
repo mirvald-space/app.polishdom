@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Volume2, VolumeX, Play, Pause } from "lucide-react";
+import { FaVolumeHigh, FaVolumeXmark, FaPlay, FaPause } from "react-icons/fa6";
 
 interface AudioPlayerProps {
   audioUrl: string;
@@ -64,9 +64,9 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
         className="h-8 w-8"
       >
         {isPlaying ? (
-          <Pause className="h-4 w-4" />
+          <FaPause className="h-4 w-4" />
         ) : (
-          <Play className="h-4 w-4" />
+          <FaPlay className="h-4 w-4" />
         )}
       </Button>
       <Button
@@ -76,9 +76,9 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
         className="h-8 w-8"
       >
         {isMuted ? (
-          <VolumeX className="h-4 w-4" />
+          <FaVolumeXmark className="h-4 w-4" />
         ) : (
-          <Volume2 className="h-4 w-4" />
+          <FaVolumeHigh className="h-4 w-4" />
         )}
       </Button>
     </div>

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Volume2, Loader2 } from "lucide-react";
+import { FaChevronRight, FaVolumeHigh, FaSpinner } from "react-icons/fa6";
 import { Markdown } from './markdown';
 import { toast } from 'sonner';
-import { createPortal } from 'react-dom';
 import ReactDOM from 'react-dom/client';
 
 interface TheoryProps {
@@ -94,9 +93,9 @@ function AudioButton({ word }: { word: string }) {
       className="inline-flex items-center justify-center w-6 h-6 p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
     >
       {isLoading ? (
-        <Loader2 className="h-3 w-3 animate-spin" />
+        <FaSpinner className="h-3 w-3 animate-spin" />
       ) : (
-        <Volume2 className="h-3 w-3" />
+        <FaVolumeHigh className="h-3 w-3" />
       )}
     </button>
   );
@@ -148,7 +147,7 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
         </div>
         <div className="flex justify-center mt-8">
           <Button onClick={onStartQuiz} size="lg" className="gap-2 rounded-2xl bg-[#BB4A3D]">
-          Перейти к освоению теории <ChevronRight className="h-4 w-4" />
+          Перейти к освоению теории <FaChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

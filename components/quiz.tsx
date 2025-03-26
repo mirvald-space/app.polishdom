@@ -4,12 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import {
-  ChevronLeft,
-  ChevronRight,
-  RefreshCw,
-  FileText,
-
-} from "lucide-react";
+  FaChevronLeft,
+  FaChevronRight,
+  FaRotate,
+  FaFileLines
+} from "react-icons/fa6";
 import QuizScore from "./score";
 import QuizReview from "./quiz-overview";
 import { Question } from "@/lib/schemas";
@@ -243,6 +242,7 @@ export default function Quiz({
             streak={streak}
             isMuted={isMuted}
             onToggleSound={() => setIsMuted(!isMuted)}
+            className="bg-red-500"
           />
         );
       case 'fillInBlank':
@@ -301,7 +301,7 @@ export default function Quiz({
                 transition={{ duration: 0.3 }}
               >
                 {!isSubmitted ? (
-                  <div className="space-y-8">
+                  <div className="space-y-8 ">
                     {renderQuestionCard()}
                     <div className="flex justify-between items-center pt-4">
                       <Button
@@ -309,7 +309,7 @@ export default function Quiz({
                         disabled={currentQuestionIndex === 0}
                         variant="ghost"
                       >
-                        <ChevronLeft className="mr-2 h-4 w-4" /> Предыдущий
+                        <FaChevronLeft className="mr-2 h-4 w-4" /> Предыдущий
                       </Button>
                       <span className="text-sm font-medium">
                         {currentQuestionIndex + 1} / {questions.length}
@@ -322,7 +322,7 @@ export default function Quiz({
                         {currentQuestionIndex === questions.length - 1
                           ? "Завершить"
                           : "Следующий"}{" "}
-                        <ChevronRight className="ml-2 h-4 w-4" />
+                        <FaChevronRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -345,13 +345,13 @@ export default function Quiz({
                         variant="outline"
                         className="bg-muted hover:bg-muted/80 w-full rounded-2xl"
                       >
-                        <RefreshCw className="mr-2 h-4 w-4" /> Повторить тест
+                        <FaRotate className="mr-2 h-4 w-4" /> Повторить тест
                       </Button>
                       <Button
                         onClick={clearPDF}
                         className="bg-primary hover:bg-primary/90 w-full rounded-2xl bg-[#BB4A3D]"
                       >
-                        <FileText className="mr-2 h-4 w-4" /> Новый тест
+                        <FaFileLines className="mr-2 h-4 w-4" /> Новый тест
                       </Button>
                     </div>
                   </div>
