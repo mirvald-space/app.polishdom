@@ -122,8 +122,8 @@ export default function ChatWithFiles() {
   }
 
   return (
-    <div className="min-h-[100dvh] w-full flex justify-center">
-      <Card className="w-full max-w-md h-full border-0 sm:border sm:h-fit mt-12">
+    <div className="min-h-[100dvh] w-full flex justify-center items-center bg-[#FAFAFA]">
+      <Card className="w-full max-w-md h-full border-0 sm:border sm:h-fit">
         <CardHeader className="text-center space-y-6">
           <div className="mx-auto flex items-center justify-center space-x-2 text-muted-foreground">
             <div className="rounded-2xl bg-primary/5 p-2">
