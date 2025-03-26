@@ -1,27 +1,40 @@
 # Polish Language Learning Assistant 🎓
 
-Hey there! 👋 I'm excited to share my Polish Language Learning Assistant with you! This is an AI-powered app that makes learning Polish fun and interactive. Whether you're just starting out or want to brush up on your skills, this tool is here to help! 🚀
+Hey there! 👋 Welcome to PolishDom, an AI-powered Polish language learning platform that makes learning Polish engaging and interactive. This project combines modern web technologies with AI to create a personalized learning experience. 🚀
 
 ## ✨ Features
 
-- 🤖 AI-generated Polish language lessons
-- 📚 Interactive theory sections
-- 🎯 Dynamic quiz generation
-- 💫 Modern UI with smooth animations
+- 🤖 AI-powered lesson generation
+- 📝 Multiple question types:
+  - Multiple choice questions
+  - Fill-in-the-blank exercises
+  - True/False questions
+- 🎯 Interactive quiz system with:
+  - Progress tracking
+  - Score calculation
+  - Streak counter
+  - Hint system
+- 🔊 Audio feedback for correct/incorrect answers
+- 📱 Responsive design with smooth animations
 - 🌓 Dark/Light mode support
-- 📱 Mobile-responsive design
 - 📊 Real-time progress tracking
+- 🔄 Quiz review and reset functionality
 
 ## 🛠️ Tech Stack
 
 - ⚡ Next.js 15
 - ⚛️ React 19
 - 📘 TypeScript
-- 🎨 Tailwind CSS
-- ✨ Framer Motion
-- 🤖 AI SDK (Google, Anthropic, OpenAI)
+- 🎨 Tailwind CSS with typography plugin
+- ✨ Framer Motion for animations
+- 🤖 AI Integration:
+  - OpenAI
+  - Anthropic
+  - Google AI
 - 🎯 Radix UI Components
-- ✅ Zod for validation
+- 📝 React Markdown with GFM support
+- 🔔 Sonner for toast notifications
+- ✅ Zod for schema validation
 
 ## 🚀 Getting Started
 
@@ -60,14 +73,6 @@ pnpm dev
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser 🎉
 
-## 📖 Usage
-
-1. Enter a topic you want to learn (e.g., "Основные польские приветствия", "Польские числа 1-10")
-2. Wait for the AI to generate the lesson content
-3. Study the theory section
-4. Take the interactive quiz to test your knowledge
-5. Repeat with new topics
-
 ## 📁 Project Structure
 
 ```
@@ -77,10 +82,15 @@ app.polishdom/
 │   └── api/               # API routes
 ├── components/            # React components
 │   ├── ui/               # UI components
-│   ├── quiz.tsx          # Quiz component
-│   └── theory.tsx        # Theory component
+│   ├── quiz.tsx          # Main quiz component
+│   ├── quiz-overview.tsx # Quiz review component
+│   ├── theory.tsx        # Theory section component
+│   ├── question-types.tsx # Question type components
+│   ├── audio-player.tsx  # Audio feedback component
+│   └── markdown.tsx      # Markdown renderer
 ├── lib/                   # Utility functions and configurations
-│   └── schemas/          # Zod schemas
+│   ├── schemas.ts        # Zod schemas
+│   └── utils.ts          # Helper functions
 ├── public/               # Static assets
 └── types/                # TypeScript type definitions
 ```
@@ -93,9 +103,9 @@ Contributions are welcome! Feel free to submit a Pull Request. Let's make this p
 
 MIT
 
-## 🌟 About Me
+## 🌟 About
 
-I'm passionate about making language learning accessible and fun for everyone! This project is my way of combining my love for technology with my interest in language education. Feel free to reach out if you have any questions or suggestions! 📧
+PolishDom is designed to make Polish language learning accessible and engaging. The project combines modern web technologies with AI to create a personalized learning experience. Whether you're a beginner or looking to improve your Polish skills, PolishDom is here to help! 📚
 
 ---
 Made with ❤️ by [Your Name]
