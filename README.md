@@ -33,8 +33,8 @@ An AI-powered application for learning Polish language, featuring interactive le
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/polish-language-assistant.git
-cd polish-language-assistant
+git clone https://github.com/yourusername/app.polishdom.git
+cd app.polishdom
 ```
 
 2. Install dependencies:
@@ -77,7 +77,7 @@ pnpm dev
 ## Project Structure
 
 ```
-polish-language-assistant/
+app.polishdom/
 ├── app/                    # Next.js app directory
 │   ├── (preview)/         # Preview routes
 │   └── api/               # API routes
