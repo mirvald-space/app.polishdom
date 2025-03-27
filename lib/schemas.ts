@@ -3,7 +3,7 @@ import { z } from "zod";
 // Base question schema with common properties
 const baseQuestionSchema = z.object({
   question: z.string(),
-  imageUrl: z.string().optional().describe("Опциональный URL изображения, связанного с вопросом"),
+  imageUrl: z.string().nullable().optional().describe("Опциональный URL изображения, связанного с вопросом"),
   difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
   hint: z.string().optional(),
   timeLimit: z.number().optional().describe("Временной лимит в секундах для этого вопроса"),

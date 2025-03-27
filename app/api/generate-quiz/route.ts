@@ -17,14 +17,16 @@ async function generateImage(prompt: string) {
     });
 
     if (!response.ok) {
-      throw new Error(`Image generation failed: ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Image generation failed:", response.statusText, errorData);
+      return undefined;
     }
 
     const data = await response.json();
     return data.data[0].url;
   } catch (error) {
     console.error("Image generation error:", error);
-    return null;
+    return undefined;
   }
 }
 
