@@ -39,17 +39,75 @@ export async function POST(request: Request) {
             - Compare with Russian where helpful ("это похоже на русское...", "в отличие от русского...")
             - Use humor and mnemonics to make things memorable
 
-            Format the content using markdown:
-            - Use headers (h2, h3) to break up sections
+            Format the content using markdown with the following structure:
+
+            # [Topic Name]
+
+            ## 1. Введение
+            - Brief introduction to the topic
+            - Key concepts to understand
+
+            ## 2. Основной текст
+            - Main content with highlighted Polish words in **bold** and Russian translations in *italic*
+            - Format translations as "Polish text | Russian text"
+            - Include relevant examples and comparisons
+
+            ## 3. Вопросы для обсуждения
+            - 3 thought-provoking questions about the topic
+            - Questions should encourage critical thinking and practice
+
+            ## 4. Упражнения
+            Format each exercise as "Question | Answer" for automatic parsing:
+            - Translation exercises: "Translate to Polish: [Russian phrase] | [Polish answer]"
+            - Fill-in-the-blank: "Complete the sentence: Mam ... lat. | dziesięć"
+            - Word order exercises: "Arrange words: (dom, mój, jest, to) | To jest mój dom"
+            - At least 5 exercises of different types
+
+            ## 5. Визуальный материал
+            List exactly 15 items in the format "Polish word | Russian translation":
+            1. word1 | translation1
+            2. word2 | translation2
+            etc.
+            Each word should be relevant to the topic and commonly used.
+
+            ## 6. Загадки
+            - 3-4 riddles about the topic
+            - Include answers in Polish and Russian
+
+            ## 7. Аудирование
+            - Questions based on listening comprehension
+            - Include audio-related tasks
+
+            ## 8. Грамматика
+            Structure the grammar section clearly:
+
+            ### Правило
+            Clear explanation of the grammar rule with examples.
+
+            ### Объяснение
+            Why this rule exists and how it differs from Russian.
+
+            ### Исключения
+            List any exceptions to the rule.
+
+            ### Примеры использования
+            At least 3 examples showing correct usage.
+
+            ### Упражнения
+            Grammar exercises in the format "Question | Answer":
+            1. Exercise1 | Answer1
+            2. Exercise2 | Answer2
+            etc.
+
+            Use markdown formatting:
+            - Headers (h1, h2, h3) for sections
             - Lists for easy scanning
             - Tables for clear comparisons
             - Blockquotes for key points and tips
             - Bold for Polish words
             - Italic for Russian translations
 
-            Format translations as "Polish text | Russian text"
-
-            Keep it engaging and conversational throughout. No code blocks or fenced sections.`,
+            Keep it engaging and conversational throughout.`,
           },
           {
             role: "user",

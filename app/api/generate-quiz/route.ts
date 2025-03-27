@@ -1,34 +1,7 @@
 import { questionsSchema } from "@/lib/schemas";
+import { generateImage } from '@/lib/utils/image';
 
 export const maxDuration = 60;
-
-async function generateImage(prompt: string) {
-  try {
-    const response = await fetch("https://api.x.ai/v1/images/generations", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.X_AI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "grok-2-image",
-        prompt: prompt,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("Image generation failed:", response.statusText, errorData);
-      return undefined;
-    }
-
-    const data = await response.json();
-    return data.data[0].url;
-  } catch (error) {
-    console.error("Image generation error:", error);
-    return undefined;
-  }
-}
 
 export async function POST(req: Request) {
   const formData = await req.formData();
