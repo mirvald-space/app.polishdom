@@ -20,6 +20,7 @@ interface BaseQuestionProps {
   isMuted: boolean;
   onToggleSound: () => void;
   showCorrectAnswer: boolean;
+  className?: string;
 }
 
 // Multiple Choice Question Component
@@ -39,6 +40,7 @@ export function MultipleChoiceCard({
   streak,
   isMuted,
   onToggleSound,
+  className,
 }: MultipleChoiceProps) {
   const answerLabels = ["A", "B", "C", "D"];
   const difficultyColors = {
@@ -48,7 +50,7 @@ export function MultipleChoiceCard({
   };
 
   return (
-    <div className="space-y-12">
+    <div className={`space-y-6 ${className || ''}`}>
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className={difficultyColors[question.difficulty]}>
