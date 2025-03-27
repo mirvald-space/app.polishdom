@@ -108,36 +108,27 @@ function AudioButton({ word }: { word: string }) {
 interface FlashCard {
   word: string;
   translation: string;
-  imageUrl?: string;
 }
 
 function FlashCardComponent({ card }: { card: FlashCard }) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>();
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const loadImage = async () => {
-      try {
-        const response = await fetch('/api/generate-flashcard-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ word: card.word }),
-        });
-
-        if (!response.ok) throw new Error('Failed to generate image');
-
-        const data = await response.json();
-        setImageUrl(data.imageUrl);
-      } catch (error) {
-        console.error('Error loading flashcard image:', error);
-      } finally {
-        setIsLoading(false);
+  // Generate background color based on the word
+  const getBackgroundColor = () => {
+    // Simple hash function to generate a consistent color from a string
+    const hashString = (str: string) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash = hash & hash;
       }
+      return Math.abs(hash);
     };
-
-    loadImage();
-  }, [card.word]);
+    
+    const hash = hashString(card.word);
+    const hue = hash % 360;
+    return `hsl(${hue}, 70%, 85%)`;
+  };
 
   return (
     <div 
@@ -145,32 +136,22 @@ function FlashCardComponent({ card }: { card: FlashCard }) {
       onClick={() => setIsFlipped(!isFlipped)}
     >
       <div className={cn(
-        "absolute inset-0 duration-500 preserve-3d",
+        "absolute inset-0 duration-500 [transform-style:preserve-3d]",
         isFlipped ? "[transform:rotateY(180deg)]" : ""
       )}>
-        {/* Front */}
-        <div className="absolute inset-0 backface-hidden">
-          <div className="h-full bg-card rounded-lg border flex flex-col items-center justify-center p-4">
-            {isLoading ? (
-              <FaSpinner className="h-8 w-8 text-muted-foreground animate-spin" />
-            ) : imageUrl ? (
-              <Image 
-                src={imageUrl} 
-                alt={card.word}
-                width={120}
-                height={120}
-                className="object-contain mb-2"
-              />
-            ) : (
-              <FaImage className="h-12 w-12 text-muted-foreground mb-2" />
-            )}
-            <p className="font-medium text-center">{card.word}</p>
+        {/* Front - Russian translation */}
+        <div className="absolute inset-0 [backface-visibility:hidden]">
+          <div 
+            className="h-full rounded-lg border flex flex-col items-center justify-center p-4"
+            style={{ backgroundColor: getBackgroundColor() }}
+          >
+            <p className="font-medium text-center text-lg">{card.translation}</p>
           </div>
         </div>
-        {/* Back */}
-        <div className="absolute inset-0 backface-hidden [transform:rotateY(180deg)]">
+        {/* Back - Polish word */}
+        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
           <div className="h-full bg-card rounded-lg border flex items-center justify-center p-4">
-            <p className="font-medium text-center">{card.translation}</p>
+            <p className="font-medium text-center text-lg">{card.word}</p>
           </div>
         </div>
       </div>
@@ -353,7 +334,13 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
     .split('\n')
     .filter(line => line.includes('|'))
     .map(line => {
-      const [word, translation] = line.split('|').map(s => s.trim());
+      // Clean up Markdown syntax from words
+      let [word, translation] = line.split('|').map(s => s.trim());
+      
+      // Remove the Markdown formatting characters
+      word = word.replace(/^\d+\.\s+/, '').replace(/\*\*/g, '');
+      translation = translation.replace(/\*/g, '');
+      
       return { word, translation };
     });
 
