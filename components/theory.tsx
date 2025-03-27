@@ -5,7 +5,6 @@ import { FaChevronRight, FaVolumeHigh, FaSpinner, FaImage, FaRotate, FaArrowRigh
 import { Markdown } from './markdown';
 import { toast } from 'sonner';
 import ReactDOM from 'react-dom/client';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import Image from 'next/image';
 import { Input } from "@/components/ui/input";
