@@ -308,6 +308,7 @@ export default function Quiz({
                         onClick={handlePreviousQuestion}
                         disabled={currentQuestionIndex === 0}
                         variant="ghost"
+                        className="bg-[#fafafa] hover:bg-[#fafafa]/80"
                       >
                         <FaChevronLeft className="mr-2 h-4 w-4" /> Предыдущий
                       </Button>
@@ -318,6 +319,7 @@ export default function Quiz({
                         onClick={handleNextQuestion}
                         disabled={!isAnswered(currentQuestionIndex)}
                         variant="ghost"
+                        className="bg-[#BB4A3D] hover:bg-[#BB4A3D]/80 text-white rounded-2xl"
                       >
                         {currentQuestionIndex === questions.length - 1
                           ? "Завершить"

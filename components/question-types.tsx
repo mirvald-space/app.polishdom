@@ -134,10 +134,10 @@ export function MultipleChoiceCard({
       {question.hint && !hasUsedHint && !showCorrectAnswer && (
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full bg-[#fafafa] hover:bg-[#fafafa]/80 rounded-2xl gap-0"
           onClick={onHint}
         >
-          <FaLightbulb className="w-4 h-4 mr-2" />
+          <FaLightbulb className="w-2 h-2 mr-2 " />
           Подсказка
         </Button>
       )}

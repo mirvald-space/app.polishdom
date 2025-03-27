@@ -220,7 +220,7 @@ function ExerciseSection({ content, onComplete }: { content: string; onComplete:
         <div className="p-4 bg-muted rounded-lg">
           <p className="text-muted-foreground">Упражнения пропущены</p>
         </div>
-        <Button onClick={resetExercises} variant="outline">
+        <Button onClick={resetExercises} variant="outline" className="rounded-2xl bg-[#fafafa] hover:bg-[#fafafa]/80">
           <FaRotate className="mr-2 h-4 w-4" />
           Вернуться к упражнениям
         </Button>
@@ -242,7 +242,7 @@ function ExerciseSection({ content, onComplete }: { content: string; onComplete:
                 setUserAnswers(newAnswers);
               }}
               placeholder="Ваш ответ..."
-              className="max-w-md"
+              className="max-w-md rounded-xl bg-[#fafafa] hover:bg-[#fafafa]/80"
               disabled={showAnswers}
             />
             {showAnswers && (
@@ -261,11 +261,11 @@ function ExerciseSection({ content, onComplete }: { content: string; onComplete:
       <div className="flex gap-4">
         {!showAnswers && (
           <>
-            <Button onClick={checkAnswers} disabled={userAnswers.length !== exercises.length}>
+            <Button onClick={checkAnswers} disabled={userAnswers.length !== exercises.length} className="rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80">
               Проверить ответы
             </Button>
-            <Button onClick={handleSkip} variant="outline">
-              Пропустить упражнения
+            <Button onClick={handleSkip} variant="outline" className="rounded-2xl bg-[#fafafa] hover:bg-[#fafafa]/80">
+              Пропустить
             </Button>
           </>
         )}
@@ -391,7 +391,7 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
           variant="outline"
           onClick={() => handleStepChange(stepOrder[currentIndex - 1])}
           disabled={currentIndex === 0}
-          className="gap-2"
+          className="gap-2 rounded-2xl bg-[#fafafa] hover:bg-[#fafafa]/80"
         >
           <FaArrowLeft className="h-4 w-4" /> Назад
         </Button>
@@ -402,11 +402,11 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
               key={step}
               onClick={() => handleStepChange(step)}
               className={cn(
-                "w-3 h-3 rounded-full transition-colors",
+                "w-2 h-2 rounded-full transition-colors",
                 currentStep === step 
-                  ? "bg-primary" 
+                  ? "bg-[#BB4A3D]" 
                   : stepHistory[step]
-                    ? "bg-primary/40 hover:bg-primary/60"
+                    ? "bg-[#cccc] hover:bg-[#ccc]/80"
                     : "bg-muted hover:bg-muted-foreground/20"
               )}
               disabled={!stepHistory[step] && index > currentIndex}
@@ -425,7 +425,7 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
           <Button 
             onClick={handleStepComplete}
             disabled={!stepHistory[currentStep]}
-            className="gap-2"
+            className="gap-2 rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80"
           >
             Вперед <FaArrowRight className="h-4 w-4" />
           </Button>
@@ -433,7 +433,7 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
           <Button 
             onClick={onStartQuiz}
             disabled={!stepHistory[currentStep]}
-            className="gap-2 bg-[#BB4A3D]"
+            className="gap-2 bg-[#BB4A3D] hover:bg-[#BB4A3D]/80"
           >
             К тесту <FaChevronRight className="h-4 w-4" />
           </Button>
@@ -450,8 +450,8 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
             <div className="prose dark:prose-invert max-w-none" ref={contentRef}>
               <Markdown>{sections.theory + sections.introduction + sections.mainText + sections.discussion}</Markdown>
             </div>
-            <Button onClick={() => setStepHistory(prev => ({ ...prev, theory: true }))} className="mt-4">
-              Я прочитал(а) материал <FaCheck className="ml-2 h-4 w-4" />
+            <Button onClick={() => setStepHistory(prev => ({ ...prev, theory: true }))} className="mt-4 rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80">
+              Я прочитал(а) материал <FaCheck className="ml-2 h-4 w-4 " />
             </Button>
           </div>
         );
@@ -473,7 +473,7 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
                 <FlashCardComponent key={i} card={card} />
               ))}
             </div>
-            <Button onClick={() => setStepHistory(prev => ({ ...prev, flashcards: true }))} className="mt-4">
+            <Button onClick={() => setStepHistory(prev => ({ ...prev, flashcards: true }))} className="mt-4 rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80">
               Я выучил(а) слова <FaCheck className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -485,7 +485,7 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
             <div className="prose dark:prose-invert max-w-none">
               <Markdown>{sections.grammar}</Markdown>
             </div>
-            <Button onClick={() => setStepHistory(prev => ({ ...prev, grammar: true }))} className="mt-4">
+            <Button onClick={() => setStepHistory(prev => ({ ...prev, grammar: true }))} className="mt-4 rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80">
               Я понял(а) грамматику <FaCheck className="ml-2 h-4 w-4" />
             </Button>
           </div>
