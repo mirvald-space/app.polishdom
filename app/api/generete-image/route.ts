@@ -1,3 +1,5 @@
+import { generateImagePrompt } from '@/lib/prompts/image';
+
 /**
  * Generates an image using x.ai API
  * @param prompt - The prompt to generate the image from
@@ -13,7 +15,7 @@ export async function generateImage(prompt: string) {
       },
       body: JSON.stringify({
         model: "grok-2-image",
-        prompt: prompt,
+        prompt: generateImagePrompt(prompt),
       }),
     });
 

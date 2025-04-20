@@ -1,5 +1,7 @@
 import { questionsSchema } from "@/lib/schemas";
-import { generateImage } from '@/lib/utils/image';
+import { QUIZ_SYSTEM_PROMPT } from '@/lib/prompts/quiz';
+import { generateImagePrompt } from '@/lib/prompts/image';
+import { generateImage } from '@/app/api/generete-image/route';
 
 export const maxDuration = 60;
 
@@ -27,48 +29,7 @@ export async function POST(req: Request) {
         messages: [
           {
             role: "system",
-            content: `You are a Polish language teacher specializing in teaching Russian speakers. Your job is to create an interactive quiz (with 4 questions) specifically for Russian speakers learning Polish based on the provided theory material.
-
-Create a mix of different question types that directly test understanding of the theory content:
-1. Multiple choice questions with 4 options (make sure all options are roughly equal in length)
-2. Fill in the blank questions where students have to provide the missing word(s)
-3. True/False questions where students have to evaluate if a statement is correct
-
-You must return ONLY valid JSON array matching this schema:
-[
-  // Multiple choice question
-  {
-    "type": "multipleChoice",
-    "question": string,
-    "options": string[] (array of 4 options),
-    "answer": 'A'|'B'|'C'|'D',
-    "difficulty": 'easy'|'medium'|'hard',
-    "hint": string (optional)
-  },
-  
-  // Fill in blank question
-  {
-    "type": "fillInBlank",
-    "question": string,
-    "context": string (text with [BLANK] placeholders for words),
-    "blanks": string[] (array of correct answers for each blank),
-    "difficulty": 'easy'|'medium'|'hard',
-    "hint": string (optional)
-  },
-  
-  // True/False question
-  {
-    "type": "trueFalse",
-    "question": string,
-    "statement": string (statement to evaluate),
-    "answer": boolean,
-    "difficulty": 'easy'|'medium'|'hard',
-    "hint": string (optional)
-  }
-]
-
-IMPORTANT: The questions MUST test understanding of the theory material provided. Use concepts, vocabulary, and facts directly from the theory. Include at least one of each type of question.
-Do not include any other text in your response.`,
+            content: QUIZ_SYSTEM_PROMPT
           },
           {
             role: "user",
@@ -79,7 +40,7 @@ ${theory}
 Remember to return ONLY the JSON array.`,
           },
         ],
-        model: "grok-beta",
+        model: "grok-3-beta",
         stream: false,
         temperature: 0,
       }),
@@ -107,23 +68,23 @@ Remember to return ONLY the JSON array.`,
     // Generate images for each question
     const questionsWithImages = await Promise.all(
       content.map(async (question: any) => {
-        let imagePrompt;
+        let promptContent;
         
         switch (question.type) {
           case 'multipleChoice':
-            imagePrompt = `An illustration related to Polish language or culture representing: ${question.question}`;
+            promptContent = question.question;
             break;
           case 'fillInBlank':
-            imagePrompt = `An illustration related to Polish language or culture representing: ${question.context.replace(/\[BLANK\]/g, '___')}`;
+            promptContent = question.context.replace(/\[BLANK\]/g, '___');
             break;
           case 'trueFalse':
-            imagePrompt = `An illustration related to Polish language or culture representing: ${question.statement}`;
+            promptContent = question.statement;
             break;
           default:
-            imagePrompt = `An illustration related to Polish language or culture`;
+            promptContent = "Polish language learning concept";
         }
         
-        const imageUrl = await generateImage(imagePrompt);
+        const imageUrl = await generateImage(promptContent);
         return {
           ...question,
           imageUrl,
@@ -138,13 +99,22 @@ Remember to return ONLY the JSON array.`,
     }
 
     return new Response(JSON.stringify(questionsWithImages), {
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400"
+      },
     });
   } catch (error) {
     console.error("Error generating quiz:", error);
     return new Response(
-      JSON.stringify({ error: "Не удалось сгенерировать тест" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({ 
+        error: "Failed to generate quiz",
+        details: error instanceof Error ? error.message : "Unknown error"
+      }),
+      { 
+        status: 500, 
+        headers: { "Content-Type": "application/json" }
+      }
     );
   }
 }

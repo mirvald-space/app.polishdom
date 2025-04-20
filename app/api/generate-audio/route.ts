@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { AUDIO_VOICE_INSTRUCTIONS } from '@/lib/prompts/audio';
 
 // Максимальное время выполнения запроса (30 секунд)
 // Уменьшено, так как обрабатываем короткие тексты
@@ -10,13 +11,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Инструкции для польского акцента
-const voiceInstructions = `Voice: Medium-pitched and melodic, with distinctive nasal quality and stressed consonants, characteristic of native Polish speakers.
-Tone: Patient and encouraging, balancing academic authority with warmth, creating comfortable learning environment.
-Dialect: Polish-influenced English with characteristic word stress patterns and simplified consonant clusters.
-Pronunciation: Emphasizes "sz", "cz" sounds, rolls "r"s strongly, stresses first syllables, and pronounces "w" as "v".
-Features: Uses occasional Polish expressions ("Dobrze!", "Rozumiem"), elongates certain vowels, adds rising intonation for questions, and maintains formal but supportive teaching cadence.`;
-
 /**
  * POST endpoint для генерации аудио из текста
  * @param request - HTTP запрос, содержащий JSON с полем text
@@ -24,48 +18,46 @@ Features: Uses occasional Polish expressions ("Dobrze!", "Rozumiem"), elongates 
  */
 export async function POST(request: Request) {
   try {
-    // Получаем текст из тела запроса
     const { text } = await request.json();
 
-    // Проверяем наличие текста
     if (!text) {
-      return new Response("Text is required", { status: 400 });
+      return new Response(
+        JSON.stringify({ error: "Text is required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
-    // Генерируем аудио с помощью OpenAI TTS API
-    // Используем модель gpt-4o-mini-tts и голос "nova"
     const response = await openai.audio.speech.create({
-      model: "gpt-4o-mini-tts",
-      voice: "nova",
+      model: "tts-1",
+      voice: "alloy",
       input: text,
-      instructions: voiceInstructions,
+      response_format: "mp3",
+      instructions: AUDIO_VOICE_INSTRUCTIONS,
     });
 
-    // Преобразуем ответ в ArrayBuffer
-    const buffer = await response.arrayBuffer();
-    
-    // Конвертируем буфер в base64 строку для передачи
-    const base64Audio = Buffer.from(buffer).toString('base64');
+    const arrayBuffer = await response.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
 
-    // Возвращаем аудио данные и тип контента
-    return NextResponse.json({ 
-      audioData: base64Audio,
-      contentType: 'audio/mp3'
-    });
-  } catch (error) {
-    // Логируем ошибку в консоль
-    console.error("Error generating audio:", error);
-    
-    // Возвращаем ошибку с деталями
     return new Response(
-      JSON.stringify({ 
-        error: "Failed to generate audio",
-        details: error instanceof Error ? error.message : "Unknown error"
+      JSON.stringify({
+        audioData: base64,
+        contentType: "audio/mpeg",
       }),
-      { 
-        status: 500, 
-        headers: { "Content-Type": "application/json" }
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        },
       }
+    );
+  } catch (error) {
+    console.error("Error generating audio:", error);
+    return new Response(
+      JSON.stringify({
+        error: "Failed to generate audio",
+        details: error instanceof Error ? error.message : "Unknown error",
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 } 
