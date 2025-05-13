@@ -74,7 +74,6 @@ function ExerciseSection({ content, onComplete }: { content: string; onComplete:
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
   const [showAnswers, setShowAnswers] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [isSkipped, setIsSkipped] = useState(false);
 
   // Parse exercises from content
   const exercises = content.split('\n')
@@ -98,27 +97,7 @@ function ExerciseSection({ content, onComplete }: { content: string; onComplete:
   const resetExercises = () => {
     setUserAnswers([]);
     setShowAnswers(false);
-    setIsSkipped(false);
   };
-
-  const handleSkip = () => {
-    setIsSkipped(true);
-    onComplete();
-  };
-
-  if (isSkipped) {
-    return (
-      <div className="space-y-6">
-        <div className="p-4 bg-muted rounded-lg">
-          <p className="text-muted-foreground">Упражнения пропущены</p>
-        </div>
-        <Button onClick={resetExercises} variant="outline" className="rounded-2xl bg-[#fafafa] hover:bg-[#fafafa]/80">
-          <FaRotate className="mr-2 h-4 w-4" />
-          Вернуться к упражнениям
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -152,14 +131,9 @@ function ExerciseSection({ content, onComplete }: { content: string; onComplete:
       ))}
       <div className="flex gap-4">
         {!showAnswers && (
-          <>
-            <Button onClick={checkAnswers} disabled={userAnswers.length !== exercises.length} className="rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80">
-              Проверить ответы
-            </Button>
-            <Button onClick={handleSkip} variant="outline" className="rounded-2xl bg-[#fafafa] hover:bg-[#fafafa]/80">
-              Пропустить
-            </Button>
-          </>
+          <Button onClick={checkAnswers} disabled={userAnswers.length !== exercises.length} className="rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80">
+            Проверить ответы
+          </Button>
         )}
         {showAnswers && !isCompleted && (
           <Button onClick={resetExercises} variant="outline">
@@ -355,7 +329,10 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
         return (
           <div className="space-y-6">
             <h3 className="text-lg font-semibold">Упражнения по теории</h3>
-            <ExerciseSection content={sections.exercises} onComplete={() => setStepHistory(prev => ({ ...prev, 'theory-practice': true }))} />
+            <ExerciseSection 
+              content={sections.exercises} 
+              onComplete={() => setStepHistory(prev => ({ ...prev, 'theory-practice': true }))} 
+            />
           </div>
         );
 
