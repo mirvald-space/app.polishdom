@@ -9,100 +9,11 @@ import { Progress } from "@/components/ui/progress";
 import Image from 'next/image';
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { AudioButton } from './shared/audio-utils';
 
 interface TheoryProps {
   content: string;
   onStartQuiz: () => void;
-}
-
-function AudioButton({ word }: { word: string }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const handleClick = async () => {
-    if (isLoading) return;
-
-    if (audioUrl && audioRef.current) {
-      try {
-        await audioRef.current.play();
-      } catch (error) {
-        console.error('Error playing cached audio:', error);
-        toast.error("Failed to play audio");
-      }
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/generate-audio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: word }),
-      });
-
-      if (!response.ok) throw new Error('Failed to generate audio');
-
-      const data = await response.json();
-      
-      // Создаем Blob из base64 данных
-      const audioData = atob(data.audioData);
-      const arrayBuffer = new ArrayBuffer(audioData.length);
-      const uint8Array = new Uint8Array(arrayBuffer);
-      for (let i = 0; i < audioData.length; i++) {
-        uint8Array[i] = audioData.charCodeAt(i);
-      }
-      const blob = new Blob([uint8Array], { type: data.contentType });
-      const url = URL.createObjectURL(blob);
-      
-      setAudioUrl(url);
-      
-      // Создаем и загружаем аудио
-      const audio = new Audio(url);
-      audioRef.current = audio;
-      
-      // Ждем загрузки аудио
-      await new Promise((resolve, reject) => {
-        audio.addEventListener('canplaythrough', resolve, { once: true });
-        audio.addEventListener('error', reject, { once: true });
-        audio.load();
-      });
-
-      await audio.play();
-    } catch (error) {
-      console.error('Error playing audio:', error);
-      toast.error("Failed to play audio");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Очищаем аудио при размонтировании
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-      if (audioUrl) {
-        URL.revokeObjectURL(audioUrl);
-      }
-    };
-  }, [audioUrl]);
-
-  return (
-    <button
-      onClick={handleClick}
-      disabled={isLoading}
-      className="inline-flex items-center justify-center w-6 h-6 p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-    >
-      {isLoading ? (
-        <FaSpinner className="h-3 w-3 animate-spin" />
-      ) : (
-        <FaVolumeHigh className="h-3 w-3" />
-      )}
-    </button>
-  );
 }
 
 interface FlashCard {
@@ -276,10 +187,10 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
     grammar: boolean;
     'grammar-practice': boolean;
   }>({
-    theory: false,
+    theory: true,
     'theory-practice': false,
-    flashcards: false,
-    grammar: false,
+    flashcards: true,
+    grammar: true,
     'grammar-practice': false,
   });
 
@@ -437,9 +348,6 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
             <div className="prose dark:prose-invert max-w-none" ref={contentRef}>
               <Markdown>{sections.theory + sections.introduction + sections.mainText + sections.discussion}</Markdown>
             </div>
-            <Button onClick={() => setStepHistory(prev => ({ ...prev, theory: true }))} className="mt-4 rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80">
-              Я прочитал(а) материал <FaCheck className="ml-2 h-4 w-4 " />
-            </Button>
           </div>
         );
       
@@ -460,9 +368,6 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
                 <FlashCardComponent key={i} card={card} />
               ))}
             </div>
-            <Button onClick={() => setStepHistory(prev => ({ ...prev, flashcards: true }))} className="mt-4 rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80">
-              Я выучил(а) слова <FaCheck className="ml-2 h-4 w-4" />
-            </Button>
           </div>
         );
 
@@ -472,9 +377,6 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
             <div className="prose dark:prose-invert max-w-none">
               <Markdown>{sections.grammar}</Markdown>
             </div>
-            <Button onClick={() => setStepHistory(prev => ({ ...prev, grammar: true }))} className="mt-4 rounded-2xl bg-[#BB4A3D] hover:bg-[#BB4A3D]/80">
-              Я понял(а) грамматику <FaCheck className="ml-2 h-4 w-4" />
-            </Button>
           </div>
         );
 
@@ -490,6 +392,17 @@ export default function Theory({ content, onStartQuiz }: TheoryProps) {
         );
     }
   };
+
+  // Автоматически устанавливаем соответствующие флаги при рендеринге шагов
+  useEffect(() => {
+    if (currentStep === 'theory') {
+      setStepHistory(prev => ({ ...prev, theory: true }));
+    } else if (currentStep === 'flashcards') {
+      setStepHistory(prev => ({ ...prev, flashcards: true }));
+    } else if (currentStep === 'grammar') {
+      setStepHistory(prev => ({ ...prev, grammar: true }));
+    }
+  }, [currentStep]);
 
   return (
     <Card className="w-full rounded-2xl">

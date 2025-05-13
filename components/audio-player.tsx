@@ -1,86 +1,36 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { FaVolumeHigh, FaVolumeXmark, FaPlay, FaPause } from "react-icons/fa6";
+"use client";
 
-interface AudioPlayerProps {
+import { useAudio } from '@/components/shared/audio-utils';
+import { FaVolumeHigh, FaVolumeLow } from 'react-icons/fa6';
+
+type AudioPlayerProps = {
   audioUrl: string;
-}
+};
 
 export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { isPlaying, toggle, audio } = useAudio(audioUrl);
+  const isMuted = audio?.muted || false;
 
-  useEffect(() => {
-    // Создаем новый Audio элемент
-    audioRef.current = new Audio(audioUrl);
-    
-    // Добавляем обработчики событий
-    audioRef.current.addEventListener('ended', () => setIsPlaying(false));
-    audioRef.current.addEventListener('error', (e) => {
-      console.error('Audio error:', e);
-      setIsPlaying(false);
-    });
-
-    // Очистка при размонтировании
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener('ended', () => setIsPlaying(false));
-        audioRef.current.removeEventListener('error', () => setIsPlaying(false));
-        audioRef.current.pause();
-        // Освобождаем Blob URL
-        URL.revokeObjectURL(audioUrl);
-      }
-    };
-  }, [audioUrl]);
-
-  const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch(error => {
-          console.error('Error playing audio:', error);
-          setIsPlaying(false);
-        });
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
+  const handleMuteToggle = () => {
+    if (audio) {
+      audio.muted = !audio.muted;
     }
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={togglePlay}
-        className="h-8 w-8"
+    <div className="flex items-center space-x-2">
+      <button
+        onClick={toggle}
+        className="text-blue-500 hover:text-blue-700 focus:outline-none"
       >
-        {isPlaying ? (
-          <FaPause className="h-4 w-4" />
-        ) : (
-          <FaPlay className="h-4 w-4" />
-        )}
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={toggleMute}
-        className="h-8 w-8"
+        {isPlaying ? "Пауза" : "Слушать"}
+      </button>
+      <button
+        onClick={handleMuteToggle}
+        className="text-gray-500 hover:text-gray-700 focus:outline-none"
       >
-        {isMuted ? (
-          <FaVolumeXmark className="h-4 w-4" />
-        ) : (
-          <FaVolumeHigh className="h-4 w-4" />
-        )}
-      </Button>
+        {isMuted ? <FaVolumeLow /> : <FaVolumeHigh />}
+      </button>
     </div>
   );
 } 

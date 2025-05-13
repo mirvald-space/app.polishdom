@@ -1,7 +1,8 @@
 import { questionsSchema } from "@/lib/schemas";
 import { QUIZ_SYSTEM_PROMPT } from '@/lib/prompts/quiz';
-import { generateImagePrompt } from '@/lib/prompts/image';
 import { generateImage } from '@/app/api/generete-image/route';
+import { XAIClient, createApiResponse } from '@/lib/api';
+import { formatErrorResponse } from '@/lib/utils';
 
 export const maxDuration = 60;
 
@@ -11,47 +12,43 @@ export async function POST(req: Request) {
   const theory = formData.get("theory") as string;
   
   if (!topic) {
-    return new Response("Тема не указана", { status: 400 });
+    return formatErrorResponse(
+      new Error("Topic is required"),
+      400,
+      "Тема не указана"
+    );
   }
 
   if (!theory) {
-    return new Response("Теоретический материал не предоставлен", { status: 400 });
+    return formatErrorResponse(
+      new Error("Theory is required"),
+      400,
+      "Теоретический материал не предоставлен"
+    );
   }
 
   try {
-    const response = await fetch("https://api.x.ai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.X_AI_API_KEY}`,
+    const messages = [
+      {
+        role: "system",
+        content: QUIZ_SYSTEM_PROMPT
       },
-      body: JSON.stringify({
-        messages: [
-          {
-            role: "system",
-            content: QUIZ_SYSTEM_PROMPT
-          },
-          {
-            role: "user",
-            content: `Create an interactive quiz about Polish language on the topic: ${topic} based on this theory material: 
+      {
+        role: "user",
+        content: `Create an interactive quiz about Polish language on the topic: ${topic} based on this theory material: 
 
 ${theory}
 
 Remember to return ONLY the JSON array.`,
-          },
-        ],
-        model: "grok-3-beta",
-        stream: false,
-        temperature: 0,
-      }),
+      },
+    ];
+    
+    // Используем класс XAIClient для запроса к API
+    const data = await XAIClient.chatCompletions(messages, {
+      model: "grok-3-beta",
+      temperature: 0
     });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(`x.ai API error: ${response.statusText} - ${JSON.stringify(errorData)}`);
-    }
-
-    const data = await response.json();
+    
     let content = data.choices[0].message.content;
     
     // Remove markdown code block markers if present
@@ -98,23 +95,8 @@ Remember to return ONLY the JSON array.`,
       throw new Error("Ответ не соответствует ожидаемому формату");
     }
 
-    return new Response(JSON.stringify(questionsWithImages), {
-      headers: { 
-        "Content-Type": "application/json",
-        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400"
-      },
-    });
+    return createApiResponse(questionsWithImages);
   } catch (error) {
-    console.error("Error generating quiz:", error);
-    return new Response(
-      JSON.stringify({ 
-        error: "Failed to generate quiz",
-        details: error instanceof Error ? error.message : "Unknown error"
-      }),
-      { 
-        status: 500, 
-        headers: { "Content-Type": "application/json" }
-      }
-    );
+    return formatErrorResponse(error, 500, "Failed to generate quiz");
   }
 }
