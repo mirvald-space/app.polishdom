@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function CoursesPage() {
   return (
-    <div className="container mx-auto py-8">
+    <div className="max-w-3xl mx-auto py-8">
       <div className="mb-8 space-y-2">
         <h1 className="text-3xl font-bold">Доступные курсы</h1>
         <p className="text-muted-foreground">

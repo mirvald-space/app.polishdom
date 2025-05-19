@@ -6,7 +6,7 @@ export const mockCourses: Course[] = [
     id: "polish-in-month",
     title: "Уверенный польский за месяц",
     description: "Интенсивный курс для быстрого освоения польского языка за 4 недели",
-    imageUrl: "/images/courses/polish-in-month.jpg",
+    imageUrl: "/public/polish-in-month.png",
     level: "beginner",
     tags: ["польский", "интенсив", "разговорный", "грамматика"],
     modules: [

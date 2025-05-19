@@ -5,6 +5,7 @@ import { getCompletedLessons } from "@/lib/data/mock-progress";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { use } from "react";
+import { Edit } from "lucide-react";
 
 interface CoursePageProps {
   params: Promise<{
@@ -61,7 +62,16 @@ export default function CoursePage({ params }: CoursePageProps) {
       <div className="mb-8 grid gap-8 md:grid-cols-3">
         {/* Информация о курсе */}
         <div className="md:col-span-2 space-y-4">
-          <h1 className="text-3xl font-bold">{course.title}</h1>
+          <div className="flex justify-between items-start">
+            <h1 className="text-3xl font-bold">{course.title}</h1>
+            
+            <Link href={`/courses/${courseId}/edit`}>
+              <Button variant="outline" size="sm" className="flex items-center gap-1">
+                <Edit className="h-4 w-4" />
+                Редактировать
+              </Button>
+            </Link>
+          </div>
           
           <div className="flex items-center space-x-2">
             <span className={`rounded-full px-2 py-1 text-xs font-medium ${levelColor[course.level]}`}>

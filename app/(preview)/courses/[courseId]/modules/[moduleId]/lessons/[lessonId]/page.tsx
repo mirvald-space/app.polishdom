@@ -6,7 +6,7 @@ import { getCompletedLessons } from "@/lib/data/mock-progress";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Edit } from "lucide-react";
 import { useEffect, useState, use } from "react";
 import { toast } from "sonner";
 
@@ -169,16 +169,25 @@ export default function LessonPage({ params }: LessonPageProps) {
   return (
     <div className="max-w-3xl mx-auto py-8">
       {/* Хлебные крошки */}
-      <div className="mb-6 flex flex-wrap items-center space-x-2 text-sm text-muted-foreground">
-        <Link href="/courses" className="hover:text-foreground">
-          Курсы
+      <div className="mb-6 flex flex-wrap justify-between items-center">
+        <div className="flex flex-wrap items-center space-x-2 text-sm text-muted-foreground">
+          <Link href="/courses" className="hover:text-foreground">
+            Курсы
+          </Link>
+          <span>/</span>
+          <Link href={`/courses/${courseId}`} className="hover:text-foreground">
+            {course.title}
+          </Link>
+          <span>/</span>
+          <span className="font-medium text-foreground">{lesson.title}</span>
+        </div>
+        
+        <Link href={`/courses/${courseId}/modules/${moduleId}/lessons/${lessonId}/edit`}>
+          <Button variant="outline" size="sm" className="flex items-center gap-1">
+            <Edit className="h-4 w-4" />
+            Редактировать урок
+          </Button>
         </Link>
-        <span>/</span>
-        <Link href={`/courses/${courseId}`} className="hover:text-foreground">
-          {course.title}
-        </Link>
-        <span>/</span>
-        <span className="font-medium text-foreground">{lesson.title}</span>
       </div>
       
       {/* Содержимое урока */}
