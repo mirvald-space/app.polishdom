@@ -26,10 +26,12 @@ export function CourseCard({ course, className }: CourseCardProps) {
   };
 
   // Количество уроков в курсе
-  const lessonsCount = modules.reduce(
-    (count, module) => count + module.lessons.length,
-    0
-  );
+  const lessonsCount = modules && modules.length > 0 
+    ? modules.reduce(
+        (count, module) => count + (module.lessons?.length || 0),
+        0
+      )
+    : 0;
 
   return (
     <Link href={`/courses/${id}`}>
@@ -51,8 +53,8 @@ export function CourseCard({ course, className }: CourseCardProps) {
               {levelText[level]}
             </span>
             <span className="text-sm text-muted-foreground">
-              {modules.length} {modules.length === 1 ? "модуль" : 
-              modules.length > 1 && modules.length < 5 ? "модуля" : "модулей"}
+              {modules?.length || 0} {modules?.length === 1 ? "модуль" : 
+              modules?.length > 1 && modules?.length < 5 ? "модуля" : "модулей"}
             </span>
           </div>
           

@@ -1,6 +1,7 @@
-import { getCourseById, mockCourses } from "@/lib/data/mock-courses";
+import { getCourseById } from "@/lib/db";
 import { createApiResponse, formatErrorResponse } from "@/lib/utils";
 import { NextRequest } from "next/server";
+import { supabase } from "@/lib/supabase-client";
 
 // GET /api/courses/[courseId] - получение информации о конкретном курсе
 export async function GET(
@@ -9,7 +10,7 @@ export async function GET(
 ) {
   try {
     const { courseId } = await params;
-    const course = getCourseById(courseId);
+    const course = await getCourseById(courseId);
 
     if (!course) {
       return formatErrorResponse(
@@ -33,9 +34,9 @@ export async function PUT(
 ) {
   try {
     const { courseId } = await params;
-    const courseIndex = mockCourses.findIndex(course => course.id === courseId);
+    const course = await getCourseById(courseId);
 
-    if (courseIndex === -1) {
+    if (!course) {
       return formatErrorResponse(
         new Error(`Course with id ${courseId} not found`),
         404,
@@ -45,21 +46,128 @@ export async function PUT(
 
     const updatedCourseData = await req.json();
 
-    // Обновляем только разрешенные поля
-    mockCourses[courseIndex] = {
-      ...mockCourses[courseIndex],
-      title: updatedCourseData.title || mockCourses[courseIndex].title,
-      description: updatedCourseData.description || mockCourses[courseIndex].description,
-      level: updatedCourseData.level || mockCourses[courseIndex].level,
-      tags: updatedCourseData.tags || mockCourses[courseIndex].tags,
-      imageUrl: updatedCourseData.imageUrl || mockCourses[courseIndex].imageUrl,
-      // Если передана структура модулей, обновляем и ее
-      ...(updatedCourseData.modules && { modules: updatedCourseData.modules }),
-      updatedAt: new Date(),
-    };
+    // Обновляем только разрешенные поля курса
+    const { data: updatedCourse, error } = await supabase
+      .from('courses')
+      .update({
+        title: updatedCourseData.title || course.title,
+        description: updatedCourseData.description || course.description,
+        level: updatedCourseData.level || course.level,
+        tags: updatedCourseData.tags || course.tags,
+        image_url: updatedCourseData.imageUrl || course.image_url,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', courseId)
+      .select()
+      .single();
+    
+    if (error) {
+      throw error;
+    }
+
+    // Если есть модули для обновления
+    if (updatedCourseData.modules && Array.isArray(updatedCourseData.modules)) {
+      // Обновляем каждый модуль
+      for (const module of updatedCourseData.modules) {
+        if (module.id) {
+          // Обновляем существующий модуль
+          const { error: moduleError } = await supabase
+            .from('modules')
+            .update({
+              title: module.title,
+              description: module.description,
+              order_number: module.order,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', module.id)
+            .eq('course_id', courseId);
+          
+          if (moduleError) {
+            throw moduleError;
+          }
+          
+          // Обновляем уроки модуля
+          if (module.lessons && Array.isArray(module.lessons)) {
+            for (const lesson of module.lessons) {
+              if (lesson.id) {
+                // Обновляем существующий урок
+                const { error: lessonError } = await supabase
+                  .from('lessons')
+                  .update({
+                    title: lesson.title,
+                    content: lesson.content,
+                    video_url: lesson.videoUrl,
+                    duration: lesson.duration,
+                    order_number: lesson.order,
+                    updated_at: new Date().toISOString()
+                  })
+                  .eq('id', lesson.id)
+                  .eq('module_id', module.id);
+                
+                if (lessonError) {
+                  throw lessonError;
+                }
+              } else {
+                // Создаем новый урок
+                const { error: lessonError } = await supabase
+                  .from('lessons')
+                  .insert({
+                    module_id: module.id,
+                    title: lesson.title,
+                    content: lesson.content,
+                    video_url: lesson.videoUrl,
+                    duration: lesson.duration,
+                    order_number: lesson.order
+                  });
+                
+                if (lessonError) {
+                  throw lessonError;
+                }
+              }
+            }
+          }
+        } else {
+          // Создаем новый модуль
+          const { data: newModule, error: moduleError } = await supabase
+            .from('modules')
+            .insert({
+              course_id: courseId,
+              title: module.title,
+              description: module.description,
+              order_number: module.order
+            })
+            .select()
+            .single();
+          
+          if (moduleError) {
+            throw moduleError;
+          }
+          
+          // Создаем уроки для нового модуля
+          if (module.lessons && Array.isArray(module.lessons)) {
+            for (const lesson of module.lessons) {
+              const { error: lessonError } = await supabase
+                .from('lessons')
+                .insert({
+                  module_id: newModule.id,
+                  title: lesson.title,
+                  content: lesson.content,
+                  video_url: lesson.videoUrl,
+                  duration: lesson.duration,
+                  order_number: lesson.order
+                });
+              
+              if (lessonError) {
+                throw lessonError;
+              }
+            }
+          }
+        }
+      }
+    }
 
     return createApiResponse({ 
-      course: mockCourses[courseIndex],
+      course: updatedCourse,
       message: "Курс успешно обновлен" 
     });
   } catch (error) {

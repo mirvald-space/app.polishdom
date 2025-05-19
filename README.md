@@ -22,6 +22,7 @@ Welcome to PolishDom, a platform for learning Polish language through interactiv
   - Markdown content support
   - Text-to-speech functionality
   - Interactive navigation
+- 🔐 User authentication and progress tracking with Supabase
 
 ## 🛠️ Tech Stack
 
@@ -30,6 +31,7 @@ Welcome to PolishDom, a platform for learning Polish language through interactiv
 - 📘 TypeScript
 - 🎨 Tailwind CSS with typography plugin
 - ✨ Framer Motion for animations
+- 🗄️ Supabase for database and authentication
 - 🤖 AI Integration:
   - OpenAI
   - Anthropic
@@ -60,6 +62,11 @@ pnpm install
    - Copy `.env.example` to `.env`
    - Add your API keys:
      ```
+     # Supabase
+     NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+     
+     # AI APIs (optional)
      GOOGLE_API_KEY=your_google_api_key
      ANTHROPIC_API_KEY=your_anthropic_api_key
      OPENAI_API_KEY=your_openai_api_key
@@ -85,18 +92,33 @@ app.polishdom/
 │   └── api/               # API routes
 ├── components/            # React components
 │   ├── ui/               # UI components
-│   ├── quiz.tsx          # Main quiz component
-│   ├── quiz-overview.tsx # Quiz review component
-│   ├── theory.tsx        # Theory section component
-│   ├── question-types.tsx # Question type components
-│   ├── audio-player.tsx  # Audio feedback component
-│   └── markdown.tsx      # Markdown renderer
+│   ├── shared/           # Shared components
+│   └── auth/             # Authentication components
 ├── lib/                   # Utility functions and configurations
-│   ├── schemas.ts        # Zod schemas
+│   ├── schemas/          # Zod schemas
+│   ├── auth.ts           # Authentication utilities
+│   ├── db.ts             # Database utilities
+│   ├── supabase-client.ts # Supabase client
 │   └── utils.ts          # Helper functions
+├── middleware.ts         # Authentication middleware
 ├── public/               # Static assets
 └── types/                # TypeScript type definitions
 ```
+
+## 📊 Database Structure
+
+The application uses Supabase for data storage with the following structure:
+
+- **users** - User information
+- **courses** - Available courses
+- **modules** - Course modules
+- **lessons** - Individual lessons within modules
+- **quizzes** - Quizzes for lessons
+- **quiz_questions** - Questions for quizzes
+- **quiz_options** - Answer options for questions
+- **course_progress** - User progress in courses
+- **module_progress** - User progress in modules
+- **lesson_progress** - User progress in lessons
 
 ## 🤝 Contributing
 

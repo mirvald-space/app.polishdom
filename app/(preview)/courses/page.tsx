@@ -1,12 +1,17 @@
 import { CourseList } from "@/components/shared/course-list";
-import { mockCourses } from "@/lib/data/mock-courses";
+import { getAllCourses } from "@/lib/db";
 
 export const metadata = {
   title: "Курсы | PolishDOM LMS",
   description: "Список доступных курсов для изучения польского языка",
 };
 
-export default function CoursesPage() {
+export const revalidate = 3600; // Ревалидация кэша каждый час
+
+export default async function CoursesPage() {
+  // Загружаем курсы из Supabase
+  const courses = await getAllCourses();
+  
   return (
     <div className="max-w-3xl mx-auto py-8">
       <div className="mb-8 space-y-2">
@@ -16,7 +21,7 @@ export default function CoursesPage() {
         </p>
       </div>
       
-      <CourseList courses={mockCourses} />
+      <CourseList courses={courses} />
     </div>
   );
 } 

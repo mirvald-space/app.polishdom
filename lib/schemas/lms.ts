@@ -17,9 +17,9 @@ export const LessonSchema = z.object({
         id: z.string(),
         text: z.string(),
         isCorrect: z.boolean(),
-      })).optional(),
+      })),
       correctAnswer: z.string().optional(),
-    })).optional(),
+    })),
     passingScore: z.number(),
   }).optional(),
 });
@@ -41,9 +41,9 @@ export const CourseSchema = z.object({
   imageUrl: z.string().optional(),
   modules: z.array(ModuleSchema),
   level: z.enum(["beginner", "intermediate", "advanced"]),
-  tags: z.array(z.string()).optional(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
+  tags: z.array(z.string()),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 // Схема для прогресса по уроку
@@ -79,17 +79,18 @@ export type LessonProgress = z.infer<typeof LessonProgressSchema>;
 export type ModuleProgress = z.infer<typeof ModuleProgressSchema>;
 export type CourseProgress = z.infer<typeof CourseProgressSchema>;
 
+// Типы для тестов
 export interface Quiz {
   questions: QuizQuestion[];
-  passingScore: number; // Минимальный процент для прохождения
+  passingScore: number;
 }
 
 export interface QuizQuestion {
   id: string;
   text: string;
-  type: 'single' | 'multiple' | 'text'; // Тип вопроса: с одним ответом, с несколькими или текстовый
-  options?: QuizOption[]; // Варианты ответов (для single и multiple)
-  correctAnswer?: string; // Правильный ответ для текстовых вопросов
+  type: 'single' | 'multiple' | 'text';
+  options: QuizOption[];
+  correctAnswer?: string;
 }
 
 export interface QuizOption {

@@ -1,19 +1,18 @@
 import { CourseEditForm } from "@/components/shared/course-edit-form";
 import { CourseContentEditor } from "@/components/shared/course-content-editor";
-import { getCourseById } from "@/lib/data/mock-courses";
+import { getCourseWithModules } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { use } from "react";
 
 interface CourseEditPageProps {
-  params: Promise<{
+  params: {
     courseId: string
-  }>;
+  };
 }
 
-export default function CourseEditPage({ params }: CourseEditPageProps) {
-  const { courseId } = use(params);
-  const course = getCourseById(courseId);
+export default async function CourseEditPage({ params }: CourseEditPageProps) {
+  const { courseId } = params;
+  const course = await getCourseWithModules(courseId);
   
   if (!course) {
     notFound();

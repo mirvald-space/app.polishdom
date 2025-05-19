@@ -1,50 +1,62 @@
 "use client";
 
 import { LessonContent } from "@/components/shared/lesson-content";
-import { getCourseById, getModuleById, getLessonById } from "@/lib/data/mock-courses";
-import { getCompletedLessons } from "@/lib/data/mock-progress";
+import { getCourseWithModules } from "@/lib/db-client";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Edit } from "lucide-react";
-import { useEffect, useState, use } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Course, Module, Lesson } from "@/lib/schemas/lms";
+import { useParams } from "next/navigation";
 
-interface LessonPageProps {
-  params: Promise<{
-    courseId: string;
-    moduleId: string;
-    lessonId: string;
-  }>;
-}
-
-// Поскольку компонент client-side, асинхронный подход отличается от server компонентов
-export default function LessonPage({ params }: LessonPageProps) {
-  // Используем React.use для распаковки параметров маршрута
-  const { courseId, moduleId, lessonId } = use(params);
+export default function LessonPage() {
+  const params = useParams();
+  const courseId = params.courseId as string;
+  const moduleId = params.moduleId as string;
+  const lessonId = params.lessonId as string;
   
-  const [course, setCourse] = useState<any>(null);
-  const [module, setModule] = useState<any>(null);
-  const [lesson, setLesson] = useState<any>(null);
-  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
+  const [course, setCourse] = useState<Course | null>(null);
+  const [module, setModule] = useState<Module | null>(null);
+  const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    const fetchData = () => {
-      // Получаем данные о курсе, модуле и уроке
-      const courseData = getCourseById(courseId);
-      const moduleData = courseData ? getModuleById(courseId, moduleId) : undefined;
-      const lessonData = moduleData ? getLessonById(courseId, moduleId, lessonId) : undefined;
-      
-      // Временно используем фиксированный userId для демонстрации
-      const userId = "user-1";
-      const completedLessonsData = getCompletedLessons(userId, courseId);
-      
-      setCourse(courseData);
-      setModule(moduleData);
-      setLesson(lessonData);
-      setCompletedLessons(completedLessonsData);
-      setIsLoading(false);
+    const fetchData = async () => {
+      try {
+        // Получаем данные о курсе
+        const courseData = await getCourseWithModules(courseId);
+        
+        if (!courseData) {
+          setIsLoading(false);
+          return;
+        }
+        
+        // Находим модуль и урок
+        const moduleData = courseData.modules.find(m => m.id === moduleId);
+        
+        if (!moduleData) {
+          setIsLoading(false);
+          return;
+        }
+        
+        const lessonData = moduleData.lessons.find(l => l.id === lessonId);
+        
+        if (!lessonData) {
+          setIsLoading(false);
+          return;
+        }
+        
+        setCourse(courseData);
+        setModule(moduleData);
+        setLesson(lessonData);
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Ошибка при загрузке данных урока:', error);
+        setIsLoading(false);
+      }
     };
     
     fetchData();
@@ -67,16 +79,13 @@ export default function LessonPage({ params }: LessonPageProps) {
     notFound();
   }
   
-  // Проверяем, завершен ли урок
-  const isLessonCompleted = completedLessons.includes(lessonId);
-  
   // Находим предыдущий и следующий уроки для навигации
   const findAdjacentLesson = (direction: "prev" | "next") => {
     // Находим индекс текущего модуля
-    const currentModuleIndex = course.modules.findIndex((m: any) => m.id === moduleId);
+    const currentModuleIndex = course.modules.findIndex((m) => m.id === moduleId);
     
     // Находим индекс текущего урока в модуле
-    const currentLessonIndex = module.lessons.findIndex((l: any) => l.id === lessonId);
+    const currentLessonIndex = module.lessons.findIndex((l) => l.id === lessonId);
     
     if (direction === "prev") {
       // Если это не первый урок в модуле, возвращаем предыдущий урок
@@ -127,41 +136,6 @@ export default function LessonPage({ params }: LessonPageProps) {
   
   const prevLesson = findAdjacentLesson("prev");
   const nextLesson = findAdjacentLesson("next");
-  
-  // Функция для обновления прогресса урока
-  const handleCompleteLesson = async () => {
-    try {
-      // Временно используем фиксированный userId для демонстрации
-      const userId = "user-1";
-      
-      const response = await fetch("/api/progress", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId,
-          courseId,
-          moduleId,
-          lessonId,
-          completed: true,
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to update lesson progress");
-      }
-      
-      const data = await response.json();
-      setCompletedLessons(data.completedLessons);
-      
-      return data;
-    } catch (error) {
-      console.error("Error updating lesson progress:", error);
-      toast.error("Не удалось обновить прогресс урока");
-      throw error;
-    }
-  };
 
   return (
     <div className="max-w-3xl mx-auto py-8">
@@ -191,8 +165,11 @@ export default function LessonPage({ params }: LessonPageProps) {
       <div className="mb-8">
         <LessonContent 
           lesson={lesson} 
-          onComplete={handleCompleteLesson}
-          isCompleted={isLessonCompleted}
+          onComplete={() => {
+            toast.success("Урок завершен");
+            return Promise.resolve(true);
+          }}
+          isCompleted={false}
         />
       </div>
       

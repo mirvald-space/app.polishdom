@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Book, GraduationCap, Home, User } from "lucide-react";
+import { Book } from "lucide-react";
 
 export function LMSNavigation() {
   const pathname = usePathname();
@@ -13,12 +13,7 @@ export function LMSNavigation() {
       name: "Курсы",
       href: "/courses",
       icon: Book,
-    },
-    {
-      name: "Профиль",
-      href: "/profile",
-      icon: User,
-    },
+    }
   ];
   
   return (
