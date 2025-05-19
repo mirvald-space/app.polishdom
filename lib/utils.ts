@@ -40,6 +40,22 @@ export const API_RESPONSE_HEADERS = {
 };
 
 /**
+ * Создает стандартный API ответ
+ * @param data - Данные для ответа
+ * @param status - HTTP статус ответа (по умолчанию 200)
+ * @returns {Response} - Стандартизированный ответ API
+ */
+export function createApiResponse(data: any, status = 200): Response {
+  return new Response(
+    JSON.stringify(data),
+    {
+      status,
+      headers: API_RESPONSE_HEADERS.json
+    }
+  );
+}
+
+/**
  * Форматирует ответ с ошибкой API
  * @param error - Ошибка, которую нужно форматировать
  * @param status - HTTP статус ответа (по умолчанию 500)
