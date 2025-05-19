@@ -5,10 +5,10 @@ import { NextRequest } from "next/server";
 // GET /api/courses/[courseId]/modules/[moduleId]/lessons/[lessonId]
 export async function GET(
   req: NextRequest,
-  { params }: { params: { courseId: string; moduleId: string; lessonId: string } }
+  { params }: { params: Promise<{ courseId: string; moduleId: string; lessonId: string }> }
 ) {
   try {
-    const { courseId, moduleId, lessonId } = params;
+    const { courseId, moduleId, lessonId } = await params;
     const lesson = getLessonById(courseId, moduleId, lessonId);
 
     if (!lesson) {
@@ -29,10 +29,10 @@ export async function GET(
 // PUT /api/courses/[courseId]/modules/[moduleId]/lessons/[lessonId]
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { courseId: string; moduleId: string; lessonId: string } }
+  { params }: { params: Promise<{ courseId: string; moduleId: string; lessonId: string }> }
 ) {
   try {
-    const { courseId, moduleId, lessonId } = params;
+    const { courseId, moduleId, lessonId } = await params;
     
     // Находим курс
     const courseIndex = mockCourses.findIndex(course => course.id === courseId);

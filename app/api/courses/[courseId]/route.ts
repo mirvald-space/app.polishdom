@@ -5,10 +5,10 @@ import { NextRequest } from "next/server";
 // GET /api/courses/[courseId] - получение информации о конкретном курсе
 export async function GET(
   req: NextRequest,
-  { params }: { params: { courseId: string } }
+  { params }: { params: Promise<{ courseId: string }> }
 ) {
   try {
-    const { courseId } = params;
+    const { courseId } = await params;
     const course = getCourseById(courseId);
 
     if (!course) {
@@ -29,10 +29,10 @@ export async function GET(
 // PUT /api/courses/[courseId] - обновление информации о курсе
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { courseId: string } }
+  { params }: { params: Promise<{ courseId: string }> }
 ) {
   try {
-    const { courseId } = params;
+    const { courseId } = await params;
     const courseIndex = mockCourses.findIndex(course => course.id === courseId);
 
     if (courseIndex === -1) {

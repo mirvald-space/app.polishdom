@@ -3,15 +3,16 @@ import { CourseContentEditor } from "@/components/shared/course-content-editor";
 import { getCourseById } from "@/lib/data/mock-courses";
 import { notFound } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { use } from "react";
 
 interface CourseEditPageProps {
-  params: {
+  params: Promise<{
     courseId: string
-  }
+  }>;
 }
 
 export default function CourseEditPage({ params }: CourseEditPageProps) {
-  const { courseId } = params;
+  const { courseId } = use(params);
   const course = getCourseById(courseId);
   
   if (!course) {

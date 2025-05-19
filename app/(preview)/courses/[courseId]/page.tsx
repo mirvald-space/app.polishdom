@@ -15,8 +15,7 @@ interface CoursePageProps {
 
 export default function CoursePage({ params }: CoursePageProps) {
   // Используем React.use() для получения параметров
-  const resolvedParams = use(params);
-  const courseId = resolvedParams.courseId;
+  const { courseId } = use(params);
   const course = getCourseById(courseId);
   
   // Временно используем фиксированный userId для демонстрации

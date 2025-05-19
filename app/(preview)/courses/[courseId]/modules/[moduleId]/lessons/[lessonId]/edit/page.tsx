@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { Lesson } from "@/lib/schemas/lms";
 import { getCourseById, getLessonById } from "@/lib/data/mock-courses";
@@ -14,15 +14,15 @@ import { notFound } from "next/navigation";
 import { toast } from "sonner";
 
 interface LessonEditPageProps {
-  params: {
+  params: Promise<{
     courseId: string;
     moduleId: string;
     lessonId: string;
-  };
+  }>;
 }
 
 export default function LessonEditPage({ params }: LessonEditPageProps) {
-  const { courseId, moduleId, lessonId } = params;
+  const { courseId, moduleId, lessonId } = use(params);
   const router = useRouter();
   
   // Получаем информацию о курсе и уроке

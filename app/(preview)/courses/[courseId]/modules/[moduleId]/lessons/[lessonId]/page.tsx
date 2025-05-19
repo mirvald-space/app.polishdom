@@ -20,11 +20,8 @@ interface LessonPageProps {
 
 // Поскольку компонент client-side, асинхронный подход отличается от server компонентов
 export default function LessonPage({ params }: LessonPageProps) {
-  // Используем React.use для доступа к параметрам маршрута
-  const resolvedParams = use(params);
-  const courseId = resolvedParams.courseId;
-  const moduleId = resolvedParams.moduleId;
-  const lessonId = resolvedParams.lessonId;
+  // Используем React.use для распаковки параметров маршрута
+  const { courseId, moduleId, lessonId } = use(params);
   
   const [course, setCourse] = useState<any>(null);
   const [module, setModule] = useState<any>(null);

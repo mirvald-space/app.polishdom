@@ -402,7 +402,8 @@ export function CourseContentEditor({ course }: CourseContentEditorProps) {
     
     const updatedQuiz: Quiz = {
       ...lesson.quiz,
-      passingScore: score
+      passingScore: score,
+      questions: lesson.quiz.questions || []
     };
     
     handleUpdateLesson(moduleId, lessonId, { quiz: updatedQuiz });
